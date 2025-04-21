@@ -1,0 +1,1 @@
+ALTER TABLE "purchases" ADD COLUMN "userDetails" jsonb NOT NULL;
