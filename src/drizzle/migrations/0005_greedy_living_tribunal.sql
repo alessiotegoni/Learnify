@@ -1,1 +1,0 @@
-ALTER TABLE "purchases" ALTER COLUMN "userDetails" SET NOT NULL;

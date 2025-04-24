@@ -1,1 +1,0 @@
-ALTER TABLE "purchases" ALTER COLUMN "userDetails" SET DEFAULT '{"fullName":null}'::jsonb;

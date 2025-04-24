@@ -1,5 +1,5 @@
 {
-  "id": "ba7d0f49-3645-4642-a3b3-87f7bedda7f2",
+  "id": "00b0558a-3249-4579-8d30-f7b387e9c698",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -373,9 +373,15 @@
           "primaryKey": false,
           "notNull": true
         },
+        "userDetails": {
+          "name": "userDetails",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
         "clerkUserId": {
           "name": "clerkUserId",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -442,18 +448,18 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user_course_access": {
-      "name": "user_course_access",
+    "public.user_product_access": {
+      "name": "user_product_access",
       "schema": "",
       "columns": {
         "clerkUserId": {
           "name": "clerkUserId",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "courseId": {
-          "name": "courseId",
+        "productId": {
+          "name": "productId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -475,12 +481,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "user_course_access_courseId_courses_id_fk": {
-          "name": "user_course_access_courseId_courses_id_fk",
-          "tableFrom": "user_course_access",
-          "tableTo": "courses",
+        "user_product_access_productId_products_id_fk": {
+          "name": "user_product_access_productId_products_id_fk",
+          "tableFrom": "user_product_access",
+          "tableTo": "products",
           "columnsFrom": [
-            "courseId"
+            "productId"
           ],
           "columnsTo": [
             "id"
@@ -490,11 +496,11 @@
         }
       },
       "compositePrimaryKeys": {
-        "user_course_access_clerkUserId_courseId_pk": {
-          "name": "user_course_access_clerkUserId_courseId_pk",
+        "user_product_access_clerkUserId_productId_pk": {
+          "name": "user_product_access_clerkUserId_productId_pk",
           "columns": [
             "clerkUserId",
-            "courseId"
+            "productId"
           ]
         }
       },
@@ -509,7 +515,7 @@
       "columns": {
         "clerkUserId": {
           "name": "clerkUserId",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

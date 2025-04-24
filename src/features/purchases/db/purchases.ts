@@ -12,9 +12,8 @@ export async function insertPurchase(
     .onConflictDoNothing()
     .returning({ id: purchases.id });
 
-  if (newPurchase) {
+  if (newPurchase)
     revalidatePurchaseCache({ id: newPurchase.id, userId: data.clerkUserId });
-  }
 }
 
 export async function updatePurchase(

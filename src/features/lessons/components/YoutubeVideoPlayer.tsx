@@ -1,22 +1,33 @@
 "use client";
 
-import Youtube, { YouTubeEvent } from "react-youtube";
+import Youtube, { YouTubeProps } from "react-youtube";
+import { cn } from "@/lib/utils";
+import useLessonWatchTracker from "@/hooks/useLessonWatchTracker";
 
 type Props = {
-  videoId: string;
-  onFinishedVideo?: (e: YouTubeEvent<number>) => void;
-};
+  lesson?: {
+    id: string;
+    courseId: string
+    isCompleted: boolean;
+  };
+} & YouTubeProps;
 
 export default function YoutubeVideoPlayer({
+  lesson,
   videoId,
-  onFinishedVideo,
+  className,
+  opts,
+  ...props
 }: Props) {
+  const tracker = useLessonWatchTracker(lesson);
+
   return (
     <Youtube
       videoId={videoId}
-      className="aspect-video rounded-lg overflow-hidden"
-      opts={{ width: "100%", height: "100%" }}
-      onEnd={onFinishedVideo}
+      className={cn("aspect-video rounded-lg overflow-hidden", className)}
+      opts={{ width: "100%", height: "100%", ...opts }}
+      {...tracker}
+      {...props}
     />
   );
 }

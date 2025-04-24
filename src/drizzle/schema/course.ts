@@ -15,5 +15,4 @@ export const courses = pgTable("courses", {
 export const coursesRelations = relations(courses, ({ many }) => ({
   courseProduct: many(courseProduct),
   sections: many(courseSections),
-  userCourseAccesses: many(userCourseAccess),
 }));

@@ -54,7 +54,8 @@ CREATE TABLE "purchases" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"pricePaidInCents" integer NOT NULL,
 	"productDetails" jsonb NOT NULL,
-	"clerkUserId" uuid NOT NULL,
+	"userDetails" jsonb NOT NULL,
+	"clerkUserId" text NOT NULL,
 	"productId" uuid NOT NULL,
 	"stripeSessionId" text NOT NULL,
 	"refundedAt" timestamp with time zone,
@@ -63,16 +64,16 @@ CREATE TABLE "purchases" (
 	CONSTRAINT "purchases_stripeSessionId_unique" UNIQUE("stripeSessionId")
 );
 --> statement-breakpoint
-CREATE TABLE "user_course_access" (
-	"clerkUserId" uuid NOT NULL,
-	"courseId" uuid NOT NULL,
+CREATE TABLE "user_product_access" (
+	"clerkUserId" text NOT NULL,
+	"productId" uuid NOT NULL,
 	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
 	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "user_course_access_clerkUserId_courseId_pk" PRIMARY KEY("clerkUserId","courseId")
+	CONSTRAINT "user_product_access_clerkUserId_productId_pk" PRIMARY KEY("clerkUserId","productId")
 );
 --> statement-breakpoint
 CREATE TABLE "user_lesson_complete" (
-	"clerkUserId" uuid NOT NULL,
+	"clerkUserId" text NOT NULL,
 	"lessonId" uuid NOT NULL,
 	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
 	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL,
@@ -84,5 +85,5 @@ ALTER TABLE "course_product" ADD CONSTRAINT "course_product_productId_products_i
 ALTER TABLE "course_sections" ADD CONSTRAINT "course_sections_courseId_courses_id_fk" FOREIGN KEY ("courseId") REFERENCES "public"."courses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lessons" ADD CONSTRAINT "lessons_courseSectionId_course_sections_id_fk" FOREIGN KEY ("courseSectionId") REFERENCES "public"."course_sections"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "purchases" ADD CONSTRAINT "purchases_productId_products_id_fk" FOREIGN KEY ("productId") REFERENCES "public"."products"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "user_course_access" ADD CONSTRAINT "user_course_access_courseId_courses_id_fk" FOREIGN KEY ("courseId") REFERENCES "public"."courses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_product_access" ADD CONSTRAINT "user_product_access_productId_products_id_fk" FOREIGN KEY ("productId") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_lesson_complete" ADD CONSTRAINT "user_lesson_complete_lessonId_lessons_id_fk" FOREIGN KEY ("lessonId") REFERENCES "public"."lessons"("id") ON DELETE cascade ON UPDATE no action;
