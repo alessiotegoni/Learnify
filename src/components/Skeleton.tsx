@@ -23,7 +23,7 @@ export function SkeletonArray({
   amount: number;
   children: ReactNode;
 }) {
-  return Array.from({ length: amount }).map(() => children);
+  return Array.from({ length: amount }, () => children);
 }
 
 export function SkeletonText({

@@ -67,11 +67,11 @@ export default function CourseCard({
 }
 
 function ViewCourseBtn({ courseId }: { courseId: string }) {
-  const { getCourseLastLesson } = useHandleLessons();
+  const { getCourseCurrentLesson } = useHandleLessons();
 
   let href = `/courses/${courseId}`;
 
-  const lastLessonId = getCourseLastLesson(courseId);
+  const lastLessonId = getCourseCurrentLesson(courseId);
   if (lastLessonId) href += `/lessons/${lastLessonId}`;
 
   return (
