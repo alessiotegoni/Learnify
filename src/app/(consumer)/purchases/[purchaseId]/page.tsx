@@ -37,11 +37,9 @@ export default async function PurchasePage({ params }: Props) {
 
 async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
   const user = await currentUser();
-
   if (!user) return redirect("/sign-in");
 
   const purchase = await getPurchase(user.id, purchaseId);
-
   if (!purchase) return notFound();
 
   const { receiptUrl, pricingRows } = await getPurchaseDetails(

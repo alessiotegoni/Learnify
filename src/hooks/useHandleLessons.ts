@@ -6,7 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 type LessonsInfo = Record<
   string,
-  { lastLesson: string; lessonsPercentage: Record<string, number> }
+  {
+    currentLesson: string;
+    lessons: Record<string, { percent: number; currentTime: number }>;
+  }
 > | null;
 
 export default function useHandleLessons(
@@ -61,15 +64,17 @@ export default function useHandleLessons(
     router.replace(`?${params.toString()}`);
   }, [lessonsIds, currentLessonIndex]);
 
-  const setLessonsInfo = useCallback(
+  const saveLessonsInfo = useCallback(
     ({
       courseId,
       id,
       percent,
+      currentTime,
     }: {
       courseId: string;
       id: string;
       percent?: number;
+      currentTime?: number;
     }) => {
       if (typeof id !== "string") return;
 
@@ -78,13 +83,16 @@ export default function useHandleLessons(
       const existingCourseInfo = lessonsInfo?.[courseId];
 
       const updatedCourseInfo = {
-        lastLesson: id,
-        lessonsPercentage: {
-          ...(existingCourseInfo?.lessonsPercentage ?? {}),
-          [id]:
-            percent ??
-            existingCourseInfo?.lessonsPercentage?.[id] ??
-            0,
+        currentLesson: id,
+        lessons: {
+          ...(existingCourseInfo?.lessons ?? {}),
+          [id]: {
+            percent: percent ?? existingCourseInfo?.lessons?.[id]?.percent ?? 0,
+            currentTime:
+              currentTime ??
+              existingCourseInfo?.lessons?.[id]?.currentTime ??
+              0,
+          },
         },
       };
 
@@ -98,46 +106,68 @@ export default function useHandleLessons(
     [lessonId, course?.id]
   );
 
-  function getLessonsInfo() {
+  const getLessonsInfo = useCallback(() => {
     const lessonsInfo: LessonsInfo = JSON.parse(
       localStorage.getItem("lessonsInfo")!
     );
 
     return lessonsInfo;
-  }
+  }, []);
 
-  function getLessonPercentage({
-    courseId,
-    id,
-  }: {
-    courseId: string;
-    id: string;
-  }) {
+  const getLessonPercentage = useCallback(
+    ({ courseId, id }: { courseId: string; id: string }) => {
+      const lessonsInfo = getLessonsInfo();
+
+      return lessonsInfo?.[courseId]?.lessons?.[id]?.percent ?? 0;
+    },
+    []
+  );
+
+  const saveLessonPercentage = useCallback(
+    (courseId: string, id: string, percent: number) => {
+      saveLessonsInfo({ courseId, id, percent });
+    },
+    []
+  );
+
+  const getLessonCurrentTime = useCallback(
+    ({ courseId, id }: { courseId: string; id: string }) => {
+      const lessonsInfo = getLessonsInfo();
+
+      return lessonsInfo?.[courseId]?.lessons?.[id]?.currentTime ?? 0;
+    },
+    []
+  );
+
+  const saveLessonCurrentTime = useCallback(
+    (courseId: string, id: string, currentTime: number) => {
+      saveLessonsInfo({ courseId, id, currentTime });
+    },
+    []
+  );
+
+  const getCourseCurrentLesson = useCallback((courseId: string) => {
     const lessonsInfo = getLessonsInfo();
 
-    return lessonsInfo?.[courseId]?.lessonsPercentage[id] ?? 0;
-  }
-
-  function getCourseLastLesson(courseId: string) {
-    const lessonsInfo = getLessonsInfo();
-
-    return lessonsInfo?.[courseId]?.lastLesson;
-  }
+    return lessonsInfo?.[courseId]?.currentLesson;
+  }, []);
 
   useEffect(() => {
     if (typeof lessonId !== "string" || !course) return;
 
     handleSetActiveSections();
     setLessonsParams();
-    setLessonsInfo({ courseId: course.id, id: lessonId });
+    saveLessonsInfo({ courseId: course.id, id: lessonId });
   }, [lessonId]);
 
   return {
     lessonId,
     activeSections,
     setActiveSections,
-    getCourseLastLesson,
+    getCourseCurrentLesson,
     getLessonPercentage,
-    setLessonsInfo,
+    saveLessonPercentage,
+    getLessonCurrentTime,
+    saveLessonCurrentTime,
   };
 }

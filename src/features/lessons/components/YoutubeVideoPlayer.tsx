@@ -2,27 +2,29 @@
 
 import Youtube, { YouTubeProps } from "react-youtube";
 import { cn } from "@/lib/utils";
-import useLessonWatchTracker from "@/hooks/useLessonWatchTracker";
+import { memo } from "react";
+import useVideoProgressTracker from "@/hooks/useVideoProgressTracker";
 
 type Props = {
   lesson?: {
     id: string;
-    courseId: string
+    courseId: string;
     isCompleted: boolean;
   };
 } & YouTubeProps;
 
-export default function YoutubeVideoPlayer({
+function YoutubeVideoPlayer({
   lesson,
   videoId,
   className,
   opts,
   ...props
 }: Props) {
-  const tracker = useLessonWatchTracker(lesson);
+  const tracker = useVideoProgressTracker(lesson);
 
   return (
     <Youtube
+      key={lesson?.id}
       videoId={videoId}
       className={cn("aspect-video rounded-lg overflow-hidden", className)}
       opts={{ width: "100%", height: "100%", ...opts }}
@@ -31,3 +33,8 @@ export default function YoutubeVideoPlayer({
     />
   );
 }
+
+export default memo(
+  YoutubeVideoPlayer,
+  (prev, next) => prev.lesson?.id === next.lesson?.id
+);

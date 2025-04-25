@@ -25,7 +25,7 @@ export async function canViewLesson(
   lesson: { id: string; status: LessonStatus }
 ) {
   "use cache";
-  //   if (role === "admin" || lesson.status === "preview") return true;
+  if (role === "admin" || lesson.status === "preview") return true;
   if (!userId || lesson.status === "private") return false;
 
   cacheTag(getUserProductAccessUserTag(userId), getLessonIdTag(lesson.id));

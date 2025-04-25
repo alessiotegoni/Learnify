@@ -103,7 +103,7 @@ export default function LessonForm({
 
         <SelectField<LessonSchemaType> name="status" label="Status">
           {lessonStatuses.map((status) => (
-            <SelectItem value={status}>
+            <SelectItem key={status} value={status}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </SelectItem>
           ))}

@@ -68,7 +68,7 @@ async function SuspenseBoundary({
 
   return (
     <div className="my-4 flex flex-col gap-4">
-      <div className="aspect-video">
+      <div className="aspect-video rounded-lg">
         {canView ? (
           <YoutubeVideoPlayer
             videoId={lesson.youtubeVideoId}
@@ -110,7 +110,7 @@ async function SuspenseBoundary({
       {canView ? (
         lesson.description && <p>{lesson.description}</p>
       ) : (
-        <p>This lesson is locker. Please purchase the course to view it.</p>
+        <p>This lesson is locked. Please purchase the course to view it.</p>
       )}
     </div>
   );

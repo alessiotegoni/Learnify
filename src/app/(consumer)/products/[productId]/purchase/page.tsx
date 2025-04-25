@@ -4,7 +4,7 @@ import { db } from "@/drizzle/db";
 import { getProductIdTag } from "@/features/products/db/cache";
 import { userOwnsProduct } from "@/features/products/db/products";
 import StripeCheckoutForm from "@/services/stripe/components/StripeCheckoutForm";
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, SignUp } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound, redirect } from "next/navigation";
@@ -12,17 +12,21 @@ import { Suspense } from "react";
 
 type Props = {
   params: Promise<{ productId: string }>;
+  searchParams: Promise<{ authMode: string }>;
 };
 
-export default async function PurchaseProductPage({ params }: Props) {
+export default async function PurchaseProductPage({
+  params,
+  searchParams,
+}: Props) {
   return (
     <Suspense fallback={<LoadingSpinner className="my-6 size-36 mx-auto" />}>
-      <SuspendedComponent params={params} />
+      <SuspendedComponent params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function SuspendedComponent({ params }: Props) {
+async function SuspendedComponent({ params, searchParams }: Props) {
   const [{ productId }, user] = await Promise.all([params, currentUser()]);
 
   const product = await getPublicProduct(productId);
@@ -40,14 +44,25 @@ async function SuspendedComponent({ params }: Props) {
     );
   }
 
+  const { authMode } = await searchParams;
+  const isSignUp = authMode === "signUp";
+
   return (
     <div className="flex flex-col items-center">
       <PageHeader title="You need an account to make a purchase" />
-      <SignIn
-        routing="hash"
-        signUpForceRedirectUrl={`/products/${product.id}/purchase`}
-        forceRedirectUrl={`/products/${productId}/purchase`}
-      />
+      {isSignUp ? (
+        <SignUp
+          routing="hash"
+          signInUrl={`/products/${productId}/purchase?authMode=signIn`}
+          forceRedirectUrl={`/products/${productId}/purchase`}
+        />
+      ) : (
+        <SignIn
+          routing="hash"
+          signUpUrl={`/products/${productId}/purchase?authMode=signUp`}
+          forceRedirectUrl={`/products/${productId}/purchase`}
+        />
+      )}
     </div>
   );
 }
