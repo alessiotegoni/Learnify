@@ -40,7 +40,7 @@ import { Suspense } from "react";
 
 export default function CoursesPage() {
   return (
-    <>
+    <div className="container">
       <PageHeader
         title="My Learning"
         description="Track your progress and continue learning"
@@ -57,7 +57,7 @@ export default function CoursesPage() {
           <CourseGrid />
         </Suspense>
       </div>
-    </>
+    </div>
   );
 }
 

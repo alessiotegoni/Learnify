@@ -1,10 +1,12 @@
+import { CardFooter } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -23,7 +25,14 @@ import { formatPlural, formatPrice } from "@/lib/formatters";
 import { sumArray } from "@/lib/sumArray";
 import { getUserCoupon } from "@/lib/userCountryHeader";
 import { auth } from "@clerk/nextjs/server";
-import { VideoIcon } from "lucide-react";
+import {
+  BookOpen,
+  CheckCircle,
+  Clock,
+  PlayCircle,
+  Star,
+  VideoIcon,
+} from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,145 +55,191 @@ export default async function ProductPage({ params }: Props) {
   );
 
   return (
-    <>
-      <div className="flex gap-16 items-center justify-between">
-        <div className="flex gap-6 flex-col items-start">
-          <div className="flex flex-col gap-2">
-            <Suspense
-              fallback={
-                <div className="text-xl">
-                  {formatPrice(product.priceInDollars)}
-                </div>
-              }
-            >
-              <Price price={product.priceInDollars} />
-            </Suspense>
-            <h1 className="text-4xl font-semibold">{product.name}</h1>
-            <div className="text-muted-foreground">
-              {formatPlural(
-                courseCount,
-                {
-                  singular: "course",
-                  plural: "courses",
-                },
-                true
-              )}{" "}
-              •{" "}
-              {formatPlural(
-                lessonsCount,
-                {
-                  singular: "lesson",
-                  plural: "lessons",
-                },
-                true
-              )}
+    <div className="container grid md:grid-cols-3 gap-10">
+      <div className="md:col-span-2 space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
+            {product.name}
+          </h1>
+          <p className="text-xl text-muted-foreground mb-4">
+            {product.description}
+          </p>
+
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex items-center gap-1.5">
+              <BookOpen className="h-5 w-5 text-primary" />
+              <span>
+                {formatPlural(
+                  courseCount,
+                  { singular: "course", plural: "courses" },
+                  true
+                )}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <VideoIcon className="h-5 w-5 text-primary" />
+              <span>
+                {formatPlural(
+                  lessonsCount,
+                  { singular: "lesson", plural: "lessons" },
+                  true
+                )}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-5 w-5 text-primary" />
+              <span>8 hours total</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Star className="h-5 w-5 text-primary fill-primary" />
+              <span className="font-medium">4.8</span>
+              <span className="text-muted-foreground">(120 reviews)</span>
             </div>
           </div>
-          <div className="text-xl">{product.description}</div>
-          <Suspense
-            fallback={
-              <Skeleton
-                className={buttonVariants({
-                  variant: "secondary",
-                  className: "h-12 w-36",
-                })}
-              />
-            }
-          >
-            <PurchaseButton productId={product.id} />
-          </Suspense>
         </div>
-        <div className="relative aspect-video max-w-lg grow shrink-0">
+
+        <div className="aspect-video relative rounded-xl overflow-hidden">
           <Image
-            src={product.imageUrl}
+            src={product.imageUrl || "/placeholder.svg"}
             fill
             alt={product.name}
-            className="object-cover rounded-xl"
+            className="object-cover"
+            priority
           />
         </div>
-      </div>
-      {product.courses.length ? (
-        <>
-          <h2 className="font-semibold text-xl mt-8 mb-3">Courses</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {product.courses.map((course) => (
-              <Card key={course.id}>
-                <CardHeader>
-                  <CardTitle>{course.name}</CardTitle>
-                  <CardDescription>
-                    {formatPlural(
-                      course.sections.length,
-                      {
-                        singular: "section",
-                        plural: "sections",
-                      },
-                      true
-                    )}{" "}
-                    •{" "}
-                    {formatPlural(
-                      sumArray(
-                        course.sections,
-                        (section) => section.lessons.length
-                      ),
-                      {
-                        singular: "lesson",
-                        plural: "lessons",
-                      },
-                      true
-                    )}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Accordion type="multiple">
-                    {course.sections.map((section, i) => (
-                      <AccordionItem key={section.id} value={section.id}>
-                        <AccordionTrigger className="flex items-center gap-2">
-                          <div className="flex flex-col grow">
-                            <span className="text-lg">{section.name}</span>
-                            <span className="text-muted-foreground">
-                              {formatPlural(
-                                section.lessons.length,
-                                {
-                                  singular: "lesson",
-                                  plural: "lessons",
-                                },
-                                true
-                              )}
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="flex flex-col gap-2 ml-2">
-                          {section.lessons.map((lesson) => (
-                            <div
-                              key={lesson.id}
-                              className="flex items-center gap-2 text-base"
-                            >
-                              <VideoIcon className="size-4" />
-                              {lesson.status === "preview" ? (
-                                <Link
-                                  className="underline"
-                                  href={`/courses/${course.id}/lessons/${lesson.id}`}
-                                >
-                                  {lesson.name}
-                                </Link>
-                              ) : (
-                                lesson.name
-                              )}
+
+        {product.courses.length ? (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-semibold">Course Content</h2>
+            <div className="grid grid-cols-1 gap-6">
+              {product.courses.map((course) => (
+                <Card key={course.id}>
+                  <CardHeader className="pb-3">
+                    <CardTitle>{course.name}</CardTitle>
+                    <CardDescription>
+                      {formatPlural(
+                        course.sections.length,
+                        { singular: "section", plural: "sections" },
+                        true
+                      )}{" "}
+                      •{" "}
+                      {formatPlural(
+                        sumArray(
+                          course.sections,
+                          (section) => section.lessons.length
+                        ),
+                        { singular: "lesson", plural: "lessons" },
+                        true
+                      )}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Accordion type="multiple" className="space-y-2">
+                      {course.sections.map((section) => (
+                        <AccordionItem
+                          key={section.id}
+                          value={section.id}
+                          className="border rounded-lg px-4"
+                        >
+                          <AccordionTrigger className="py-3 hover:no-underline">
+                            <div className="flex flex-col items-start text-left">
+                              <span className="text-base font-medium">
+                                {section.name}
+                              </span>
+                              <span className="text-sm text-muted-foreground">
+                                {formatPlural(
+                                  section.lessons.length,
+                                  { singular: "lesson", plural: "lessons" },
+                                  true
+                                )}
+                              </span>
                             </div>
-                          ))}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </CardContent>
-              </Card>
-            ))}
+                          </AccordionTrigger>
+                          <AccordionContent className="pt-1 pb-3">
+                            <ul className="space-y-3">
+                              {section.lessons.map((lesson) => (
+                                <li
+                                  key={lesson.id}
+                                  className="flex items-center gap-2"
+                                >
+                                  {lesson.status === "preview" ? (
+                                    <PlayCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                                  ) : (
+                                    <VideoIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                  )}
+                                  {lesson.status === "preview" ? (
+                                    <Link
+                                      className="text-primary hover:underline"
+                                      href={`/courses/${course.id}/lessons/${lesson.id}`}
+                                    >
+                                      {lesson.name}
+                                      <Badge
+                                        variant="outline"
+                                        className="ml-2 text-xs border-primary text-primary"
+                                      >
+                                        Preview
+                                      </Badge>
+                                    </Link>
+                                  ) : (
+                                    <span>{lesson.name}</span>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </>
-      ) : (
-        <p>No courses yet</p>
-      )}
-    </>
+        ) : (
+          <div className="bg-muted/50 rounded-lg p-6 text-center">
+            <p className="text-muted-foreground">No courses available yet</p>
+          </div>
+        )}
+      </div>
+
+      <div className="md:col-span-1">
+        <div className="sticky top-20">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-3">
+              <Suspense
+                fallback={
+                  <div className="text-2xl font-bold">
+                    {formatPrice(product.priceInDollars)}
+                  </div>
+                }
+              >
+                <Price price={product.priceInDollars} />
+              </Suspense>
+            </CardHeader>
+            <CardContent className="pb-3">
+              <ul className="space-y-3">
+                {[
+                  "Full lifetime access",
+                  "Access on mobile and desktop",
+                  "Certificate of completion",
+                  "30-day money-back guarantee",
+                ].map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter className="pt-3">
+              <Suspense fallback={<Skeleton className="h-12 w-full" />}>
+                <PurchaseButton productId={product.id} />
+              </Suspense>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -196,14 +251,14 @@ async function PurchaseButton({ productId }: { productId: string }) {
 
   return (
     <Button
-      className="text-xl h-auto py-4 px-8 rounded-lg"
+      className="w-full text-lg py-6 rounded-xl"
       disabled={hasProduct}
       asChild={!hasProduct}
     >
       {hasProduct ? (
-        "You already own this product"
+        "You already own this course"
       ) : (
-        <Link href={`/products/${productId}/purchase`}>Get Now</Link>
+        <Link href={`/products/${productId}/purchase`}>Enroll Now</Link>
       )}
     </Button>
   );
@@ -212,16 +267,24 @@ async function PurchaseButton({ productId }: { productId: string }) {
 export async function Price({ price }: { price: number }) {
   const coupon = await getUserCoupon();
   if (price === 0 || !coupon)
-    return <div className="text-xl">{formatPrice(price)}</div>;
+    return <div className="text-xl font-bold">{formatPrice(price)}</div>;
 
   return (
-    <div className="flex gap-2 items-baseline">
-      <div className="line-through text-xs opacity-50">
-        {formatPrice(price)}
+    <div className="space-y-1">
+      <div className="flex items-center gap-2">
+        <div className="text-2xl font-bold">
+          {formatPrice(price * (1 - coupon.discountPercentage))}
+        </div>
+        <div className="line-through text-muted-foreground">
+          {formatPrice(price)}
+        </div>
       </div>
-      <div className="text-xl">
-        {formatPrice(price * (1 - coupon.discountPercentage))}
-      </div>
+      <Badge
+        variant="outline"
+        className="bg-green-50 text-green-700 border-green-200"
+      >
+        {Math.round(coupon.discountPercentage * 100)}% off
+      </Badge>
     </div>
   );
 }

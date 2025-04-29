@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { db } from "@/drizzle/db";
 import CoursePageClient from "@/features/courses/components/CoursePageClient";
 import { getCourseIdTag } from "@/features/courses/db/cache/courses";
@@ -26,37 +26,43 @@ export default async function CoursePageLayout({
   if (!course) return notFound();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[320px_1fr] h-[calc(100dvh-64px)] gap-6">
-      <aside className="bg-card rounded-xl border overflow-hidden h-full flex flex-col">
-        <div className="flex items-center gap-2 p-4 border-b">
-          <Button variant="ghost" size="icon" asChild className="shrink-0">
-            <Link href="/courses">
-              <ArrowLeft className="size-5" />
-              <span className="sr-only">Back to courses</span>
-            </Link>
-          </Button>
-          <div className="text-lg font-semibold truncate">{course.name}</div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="ml-auto shrink-0"
-            asChild
-          >
-            <Link href={`/courses/${course.id}`}>
-              <Info className="size-5" />
-              <span className="sr-only">Course info</span>
-            </Link>
-          </Button>
-        </div>
-        <ScrollArea className="flex-grow">
-          <div className="p-4">
-            <Suspense
-              fallback={<CoursePageClient course={mapCourse(course, [])} />}
+    <div className="container grid grid-cols-1 md:grid-cols-[320px_1fr] gap-6">
+      <aside
+        className="bg-card rounded-xl border overflow-hidden
+      flex flex-col"
+      >
+        <div className="sticky top-0">
+          <div className="flex items-center gap-2 p-4 border-b">
+            <Button variant="ghost" size="icon" asChild className="shrink-0">
+              <Link href="/courses">
+                <ArrowLeft className="size-5" />
+                <span className="sr-only">Back to courses</span>
+              </Link>
+            </Button>
+            <div className="text-lg font-semibold truncate">{course.name}</div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-auto shrink-0"
+              asChild
             >
-              <SuspenseBoundary course={course} />
-            </Suspense>
+              <Link href={`/courses/${course.id}`}>
+                <Info className="size-5" />
+                <span className="sr-only">Course info</span>
+              </Link>
+            </Button>
           </div>
-        </ScrollArea>
+          <ScrollArea type="scroll">
+            <div className="p-4">
+              <Suspense
+                fallback={<CoursePageClient course={mapCourse(course, [])} />}
+              >
+                <SuspenseBoundary course={course} />
+              </Suspense>
+            </div>
+            <ScrollBar />
+          </ScrollArea>
+        </div>
       </aside>
       <div className="bg-card rounded-xl border p-4 overflow-y-auto h-fit">
         {children}

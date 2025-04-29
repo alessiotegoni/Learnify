@@ -1,3 +1,4 @@
+import { SkeletonButton, SkeletonText } from "@/components/Skeleton";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { userLessonComplete } from "@/drizzle/schema";
@@ -11,8 +12,9 @@ import { canViewLesson } from "@/features/lessons/permissions/lessons";
 import { AwaitedReturn } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { and, count, eq } from "drizzle-orm";
-import { Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -43,7 +45,20 @@ export default async function LessonPage({ params, searchParams }: Props) {
 }
 
 function LoadingSkeleton() {
-  return null;
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="aspect-video bg-muted rounded-lg animate-pulse" />
+      <div className="flex justify-between items-start gap-4">
+        <SkeletonText />
+        <div className="flex gap-3">
+          <SkeletonText rows={2} />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <SkeletonText rows={3} />
+      </div>
+    </div>
+  );
 }
 
 async function SuspenseBoundary({
@@ -67,51 +82,70 @@ async function SuspenseBoundary({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="aspect-video rounded-lg">
+    <div className="flex flex-col gap-6">
+      <div className="aspect-video rounded-lg overflow-hidden">
         {canView ? (
           <YoutubeVideoPlayer
             videoId={lesson.youtubeVideoId}
             lesson={{ id: lesson.id, courseId, isCompleted: isLessonComplete }}
           />
         ) : (
-          <div className="flex items-center justify-center bg-primary text-primary-foreground h-full w-full">
-            <Lock className="size-16" />
+          <div className="flex flex-col items-center justify-center bg-primary/10 text-primary h-full w-full">
+            <Lock className="size-16 mb-4" />
+            <p className="text-lg font-medium">This lesson is locked</p>
+            <p className="text-sm text-muted-foreground">
+              Purchase the course to access this content
+            </p>
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-start gap-4 mt-4">
+
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <h1 className="text-2xl font-semibold">{lesson.name}</h1>
           <div className="flex justify-end gap-3">
             {searchParams.previous && (
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="gap-2 rounded-full" asChild>
                 <Link
                   replace
                   href={`/courses/${courseId}/lessons/${searchParams.previous}`}
                 >
+                  <ArrowLeft className="h-4 w-4" />
                   Previous
                 </Link>
               </Button>
             )}
             {searchParams.next && (
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="gap-2 rounded-full" asChild>
                 <Link
                   replace
                   href={`/courses/${courseId}/lessons/${searchParams.next}`}
                 >
                   Next
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             )}
           </div>
         </div>
+
+        {canView ? (
+          lesson.description && (
+            <div className="prose dark:prose-invert max-w-none">
+              <p>{lesson.description}</p>
+            </div>
+          )
+        ) : (
+          <div className="bg-muted/50 rounded-lg p-6 text-center">
+            <p className="text-muted-foreground">
+              This lesson is locked. Please purchase the course to view it.
+            </p>
+            <Button className="mt-4 rounded-full" asChild>
+              <Link href={`/#courses`}>Purchase Course</Link>
+            </Button>
+          </div>
+        )}
       </div>
-      {canView ? (
-        lesson.description && <p>{lesson.description}</p>
-      ) : (
-        <p>This lesson is locked. Please purchase the course to view it.</p>
-      )}
     </div>
   );
 }

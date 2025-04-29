@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import ProductCard from "@/features/products/components/ProductCard";
 import { getProductGlobalTag } from "@/features/products/db/cache";
+import { SignedIn } from "@clerk/nextjs";
 import { BookOpen, Star, Users } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Image from "next/image";
@@ -14,8 +15,11 @@ export default async function HomePage() {
   return (
     <>
       <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-background z-0"></div>
-        <div className="container relative z-10">
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-primary/10 rounded-lg
+        to-background z-0"
+        ></div>
+        <div className="container !pt-8 relative z-10">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
@@ -34,14 +38,16 @@ export default async function HomePage() {
                 <Button asChild size="lg" className="rounded-full">
                   <Link href="#courses">Browse Courses</Link>
                 </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full"
-                >
-                  <Link href="/courses">My Learning</Link>
-                </Button>
+                <SignedIn>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="rounded-full"
+                  >
+                    <Link href="/courses">My Learning</Link>
+                  </Button>
+                </SignedIn>
               </div>
               <div className="flex items-center gap-4 pt-4">
                 <div className="flex -space-x-2">
@@ -77,20 +83,13 @@ export default async function HomePage() {
       </section>
 
       <section id="courses" className="py-12 md:py-24">
-        <div className="container">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight">
-                Featured Courses
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                Discover our most popular and highly-rated courses
-              </p>
-            </div>
-            <Button asChild variant="outline">
-              <Link href="/courses">View All Courses</Link>
-            </Button>
-          </div>
+        <div className="container !pt-8">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Featured Courses
+          </h2>
+          <p className="text-muted-foreground mt-2 mb-10">
+            Discover our most popular and highly-rated courses
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
@@ -101,7 +100,7 @@ export default async function HomePage() {
       </section>
 
       <section className="py-12 md:py-24 bg-muted/50">
-        <div className="container">
+        <div className="container !pt-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl font-bold tracking-tight">
               Why Choose Learnify?
