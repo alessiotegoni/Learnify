@@ -4,6 +4,8 @@ export default function AuthLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className="min-h-screen grid place-content-center">{children}</div>
+    <div className="absolute inset-0 flex justify-center items-center">
+      {children}
+    </div>
   );
 }
