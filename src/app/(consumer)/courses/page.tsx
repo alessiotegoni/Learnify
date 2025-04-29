@@ -13,6 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import ViewCourseBtn from "@/components/ViewCourseBtn";
 import { db } from "@/drizzle/db";
 import {
   courseProduct,
@@ -23,7 +25,6 @@ import {
   userCourseAccess,
   userLessonComplete,
 } from "@/drizzle/schema";
-import CourseCard from "@/features/courses/components/CourseCard";
 import { getCourseIdTag } from "@/features/courses/db/cache/courses";
 import { getUserProductAccessUserTag } from "@/features/courses/db/cache/userCourseAccess";
 import { getCourseSectionCourseTag } from "@/features/coursesSections/db/cache";
@@ -32,6 +33,7 @@ import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lesson
 import { formatPlural } from "@/lib/formatters";
 import { auth } from "@clerk/nextjs/server";
 import { and, countDistinct, desc, eq, inArray } from "drizzle-orm";
+import { BookOpen, Clock, PlayCircle } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -39,8 +41,12 @@ import { Suspense } from "react";
 export default function CoursesPage() {
   return (
     <>
-      <PageHeader title="My courses" />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols- gap-4">
+      <PageHeader
+        title="My Learning"
+        description="Track your progress and continue learning"
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         <Suspense
           fallback={
             <SkeletonArray amount={3}>
@@ -63,15 +69,71 @@ async function CourseGrid() {
 
   if (!courses.length)
     return (
-      <div className="flex flex-col gap-2 items-start">
-        You have no courses yet
-        <Button asChild size="lg">
+      <div className="col-span-full flex flex-col items-center text-center py-16">
+        <div className="rounded-full bg-primary/10 p-4 mb-4">
+          <BookOpen className="h-10 w-10 text-primary" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">No courses yet</h3>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          You haven't enrolled in any courses yet. Browse our catalog to find
+          courses that interest you.
+        </p>
+        <Button asChild size="lg" className="rounded-full">
           <Link href="/">Browse Courses</Link>
         </Button>
       </div>
     );
 
-  return courses.map((course) => <CourseCard key={course.id} {...course} />);
+  return courses.map((course) => (
+    <Card key={course.id} className="overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl">{course.name}</CardTitle>
+        <CardDescription>
+          {formatPlural(
+            course.sectionsCount,
+            { singular: "section", plural: "sections" },
+            true
+          )}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pb-3">
+        <p className="text-muted-foreground line-clamp-2 mb-4">
+          {course.description}
+        </p>
+
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-sm">
+            <span>Progress</span>
+            <span className="font-medium">
+              {course.completedLessonsCount}/{course.lessonsCount} lessons
+            </span>
+          </div>
+          <Progress
+            value={
+              course.lessonsCount
+                ? (course.completedLessonsCount / course.lessonsCount) * 100
+                : 0
+            }
+            className="h-2"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Clock className="h-4 w-4" />
+            <span>4h 30m total</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <PlayCircle className="h-4 w-4" />
+            <span>{course.lessonsCount} videos</span>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="pt-3">
+        <ViewCourseBtn courseId={course.id} />
+      </CardFooter>
+    </Card>
+  ));
 }
 
 function SkeletonCourseCard() {

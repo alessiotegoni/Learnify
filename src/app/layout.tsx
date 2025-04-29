@@ -35,9 +35,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-dvh flex-col">
               <Navbar />
-              <main className="flex-1 pt-16">{children}</main>
+              <main className="container">{children}</main>
               <Footer />
             </div>
           </ThemeProvider>
@@ -50,7 +50,7 @@ export default function RootLayout({
 function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container !pt-8 flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <GraduationCap className="h-6 w-6 text-primary" />
@@ -131,10 +131,10 @@ function MobileNav() {
         <span className="sr-only">Close menu</span>
       </label>
       <div
-        className="fixed left-0 top-16 w-full z-50 hidden bg-background
+        className="fixed left-0 top-16 w-full z-50 hidden border-b bg-background
       peer-checked:block md:hidden"
       >
-        <div className="container py-6 space-y-4">
+        <div className="container !py-6 !pt-6 space-y-4">
           <Link
             href="/"
             className="flex w-full items-center pb-2 text-lg font-medium"
@@ -180,9 +180,9 @@ async function AdminLink() {
 
 function Footer() {
   return (
-    <footer className="border-t py-6 md:py-0">
+    <footer className="border-t">
       <div
-        className="container flex flex-col items-center
+        className="container !pt-8 flex flex-col items-center
       justify-between gap-4 md:h-16 md:flex-row"
       >
         <p className="text-sm text-muted-foreground">

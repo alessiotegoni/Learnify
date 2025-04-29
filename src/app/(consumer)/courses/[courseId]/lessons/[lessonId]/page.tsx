@@ -67,7 +67,7 @@ async function SuspenseBoundary({
   );
 
   return (
-    <div className="my-4 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="aspect-video rounded-lg">
         {canView ? (
           <YoutubeVideoPlayer

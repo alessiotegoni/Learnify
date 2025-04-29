@@ -164,6 +164,7 @@ export default function useHandleLessons(
     lessonId,
     activeSections,
     setActiveSections,
+    getLessonsInfo,
     getCourseCurrentLesson,
     getLessonPercentage,
     saveLessonPercentage,

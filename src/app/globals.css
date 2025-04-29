@@ -50,7 +50,7 @@
 
 @layer utilities {
   .container {
-    @apply lg:max-w-[1500px] p-8 mx-auto
+    @apply lg:max-w-[1500px] p-8 mx-auto flex-1 pt-24
   }
 }
 
