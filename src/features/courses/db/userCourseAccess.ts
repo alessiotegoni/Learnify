@@ -35,3 +35,16 @@ export async function revokeUserCourseAccess(
 
   revalidatePurchaseCache({ id, userId: clerkUserId });
 }
+
+export async function revokeUserCourseAllAccesses(
+  clerkUserId: string,
+  trx: Omit<typeof db, "$client"> = db
+) {
+  const { rowCount } = await trx
+    .delete(userCourseAccess)
+    .where(eq(userCourseAccess.clerkUserId, clerkUserId));
+
+  if (!rowCount) throw new Error();
+
+  revalidatePurchaseCache({ userId: clerkUserId });
+}
