@@ -1,4 +1,3 @@
-import { getPurchases } from "@/app/admin/sales/page";
 import ActionButton from "@/components/ActionButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,10 +14,12 @@ import { AwaitedReturn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { refundPurchase } from "../actions/purchases";
+import { getPurchases } from "../queries/sales/purchases";
 
 type Props = {
   purchases: AwaitedReturn<typeof getPurchases>;
 };
+
 export default function PurchaseTable({ purchases }: Props) {
   return (
     <Table>

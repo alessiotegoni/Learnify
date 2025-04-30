@@ -7,6 +7,7 @@ import ProductCard, {
   ProductCardSkeleton,
 } from "@/features/products/components/ProductCard";
 import { getProductGlobalTag } from "@/features/products/db/cache";
+import { getPublicProducts } from "@/features/products/queries/products";
 import { SignedIn } from "@clerk/nextjs";
 import { BookOpen, Star, Users } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
@@ -165,21 +166,4 @@ async function PublicProductsList() {
   return products.map((product) => (
     <ProductCard key={product.id} {...product} />
   ));
-}
-
-export async function getPublicProducts() {
-  "use cache";
-  cacheTag(getProductGlobalTag());
-
-  return db.query.products.findMany({
-    columns: {
-      id: true,
-      name: true,
-      description: true,
-      priceInDollars: true,
-      imageUrl: true,
-    },
-    where: ({ status }, { eq }) => eq(status, "public"),
-    orderBy: ({ createdAt }, { asc }) => asc(createdAt),
-  });
 }

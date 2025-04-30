@@ -1,8 +1,6 @@
 import PageHeader from "@/components/PageHeader";
-import { db } from "@/drizzle/db";
 import PurchaseTable from "@/features/purchases/components/PurchaseTable";
-import { getPurchaseGlobalTag } from "@/features/purchases/db/cache";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getPurchases } from "@/features/purchases/queries/sales/purchases";
 
 export default async function SalesPage() {
   const purchases = await getPurchases();
@@ -18,22 +16,4 @@ export default async function SalesPage() {
       </div>
     </>
   );
-}
-
-export async function getPurchases() {
-  "use cache";
-  cacheTag(getPurchaseGlobalTag());
-
-  return db.query.purchases.findMany({
-    columns: {
-      id: true,
-      clerkUserId: true,
-      pricePaidInCents: true,
-      refundedAt: true,
-      userDetails: true,
-      productDetails: true,
-      createdAt: true,
-    },
-    orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-  });
 }

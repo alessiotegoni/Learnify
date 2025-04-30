@@ -157,7 +157,7 @@ function SkeletonCourseCard() {
   );
 }
 
-export async function getUserCourses(userId: string) {
+async function getUserCourses(userId: string) {
   "use cache";
   cacheTag(
     getUserProductAccessUserTag(userId),

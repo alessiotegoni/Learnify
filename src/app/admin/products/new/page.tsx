@@ -1,12 +1,10 @@
-import { db } from "@/drizzle/db";
-import { getCourseGlobalTag } from "@/features/courses/db/cache/courses";
 import ProductForm from "@/features/products/components/ProductForm";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Card, CardContent } from "@/components/ui/card";
 import PageHeader from "@/components/PageHeader";
+import { getProductAvaiableCourses } from "@/features/courses/queries/courses";
 
 export default async function NewProductPage() {
-  const courses = await getCourses();
+  const courses = await getProductAvaiableCourses();
 
   return (
     <div className="max-w-md mx-auto">
@@ -21,18 +19,4 @@ export default async function NewProductPage() {
       </Card>
     </div>
   );
-}
-
-export async function getCourses() {
-  "use cache";
-  cacheTag(getCourseGlobalTag());
-
-  return db.query.courses
-    .findMany({
-      columns: { id: true, name: true },
-      orderBy: ({ createdAt }, { asc }) => asc(createdAt),
-    })
-    .then((courses) =>
-      courses.map(({ id: value, name: label }) => ({ value: value, label }))
-    );
 }

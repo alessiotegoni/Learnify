@@ -11,12 +11,12 @@ import {
 import { formatPlural } from "@/lib/formatters";
 import { EyeIcon, LockIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
-import { getProducts } from "@/app/admin/products/page";
 import { deleteProduct } from "../actions/products";
 import Image from "next/image";
 import { formatPrice } from "@/lib/formatters";
 import { Badge } from "@/components/ui/badge";
 import { ProductStatus } from "@/drizzle/schema";
+import { getProducts } from "../queries/products";
 
 export default function ProductsTable({
   products,

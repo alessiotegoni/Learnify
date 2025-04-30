@@ -1,4 +1,3 @@
-import { getPurchases } from "@/app/(consumer)/purchases/page";
 import {
   SkeletonArray,
   SkeletonButton,
@@ -19,6 +18,7 @@ import { AwaitedReturn } from "@/lib/utils";
 import { Receipt } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { getPurchases } from "../queries/purchases";
 
 type Props = {
   purchases: AwaitedReturn<typeof getPurchases>;

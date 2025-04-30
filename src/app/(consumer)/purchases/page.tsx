@@ -1,13 +1,11 @@
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { db } from "@/drizzle/db";
 import UserPurchaseTable, {
   UserPurchaseTableSkeleton,
 } from "@/features/purchases/components/UserPurchaseTable";
-import { getPurchaseGlobalTag } from "@/features/purchases/db/cache";
+import { getPurchases } from "@/features/purchases/queries/purchases";
 import { auth } from "@clerk/nextjs/server";
 import { ShoppingCart } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -46,21 +44,4 @@ async function SuspenseBoundary() {
     );
 
   return <UserPurchaseTable purchases={purchases} />;
-}
-
-export async function getPurchases(userId: string) {
-  "use cache";
-  cacheTag(getPurchaseGlobalTag());
-
-  return db.query.purchases.findMany({
-    columns: {
-      id: true,
-      pricePaidInCents: true,
-      productDetails: true,
-      refundedAt: true,
-      createdAt: true,
-    },
-    where: ({ clerkUserId }, { eq }) => eq(clerkUserId, userId),
-    orderBy: ({ createdAt }, { desc }) => desc(createdAt),
-  });
 }

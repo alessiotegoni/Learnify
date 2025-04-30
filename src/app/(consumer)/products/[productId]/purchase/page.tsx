@@ -17,6 +17,7 @@ import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
+import { getPublicProduct } from "@/features/products/queries/products";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -126,21 +127,4 @@ async function SuspendedComponent({ params, searchParams }: Props) {
       </Card>
     </>
   );
-}
-
-export async function getPublicProduct(productId: string) {
-  "use cache";
-  cacheTag(getProductIdTag(productId));
-
-  return db.query.products.findFirst({
-    columns: {
-      id: true,
-      name: true,
-      imageUrl: true,
-      description: true,
-      priceInDollars: true,
-    },
-    where: ({ id, status }, { and, eq }) =>
-      and(eq(id, productId), eq(status, "public")),
-  });
 }

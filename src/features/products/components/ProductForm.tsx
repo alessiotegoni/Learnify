@@ -20,7 +20,7 @@ import SelectField from "@/components/SelectField";
 import { productStatuses } from "@/drizzle/schema";
 import { SelectItem } from "@/components/ui/select";
 import MultipleSelector from "@/components/ui/multiselect";
-import { getProduct } from "@/app/admin/products/[productId]/edit/page";
+import { getProduct } from "../queries/products";
 
 export default function ProductForm({
   courses,

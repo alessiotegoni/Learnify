@@ -1,4 +1,3 @@
-import { getPublicProducts } from "@/app/(consumer)/page";
 import { SkeletonButton, SkeletonText } from "@/components/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import { BookOpen, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getPublicProducts } from "../queries/products";
 
 export default function ProductCard({
   id,
