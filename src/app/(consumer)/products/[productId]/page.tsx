@@ -264,7 +264,7 @@ async function PurchaseButton({ productId }: { productId: string }) {
   );
 }
 
-export async function Price({ price }: { price: number }) {
+async function Price({ price }: { price: number }) {
   const coupon = await getUserCoupon();
   if (price === 0 || !coupon)
     return <div className="text-xl font-bold">{formatPrice(price)}</div>;

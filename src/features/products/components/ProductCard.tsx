@@ -72,7 +72,7 @@ export default function ProductCard({
   );
 }
 
-export async function Price({ price }: { price: number }) {
+async function Price({ price }: { price: number }) {
   const coupon = await getUserCoupon();
   if (price === 0 || !coupon) {
     return <Badge className="bg-primary"> {formatPrice(price)} </Badge>;
