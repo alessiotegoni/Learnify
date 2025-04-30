@@ -4,13 +4,18 @@ import PurchaseTable from "@/features/purchases/components/PurchaseTable";
 import { getPurchaseGlobalTag } from "@/features/purchases/db/cache";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
-export default async function PurchasesPage() {
+export default async function SalesPage() {
   const purchases = await getPurchases();
 
   return (
     <>
-      <PageHeader title="Sales" />
-      <PurchaseTable purchases={purchases} />
+      <PageHeader
+        title="Sales"
+        description="View and manage all sales transactions on your platform."
+      />
+      <div className="rounded-xl border overflow-hidden bg-card">
+        <PurchaseTable purchases={purchases} />
+      </div>
     </>
   );
 }

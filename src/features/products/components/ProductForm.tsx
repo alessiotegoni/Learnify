@@ -57,12 +57,12 @@ export default function ProductForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
       >
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 items-start">
+        <div className="grid gap-6 md:grid-cols-2 items-start">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2 md:col-span-1">
                 <FormRequiredLabel label="Name" />
                 <FormControl>
                   <Input {...field} />
@@ -76,7 +76,7 @@ export default function ProductForm({
             control={form.control}
             name="priceInDollars"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2 md:col-span-1">
                 <FormRequiredLabel label="Price" />
                 <FormControl>
                   <Input
@@ -97,7 +97,7 @@ export default function ProductForm({
             control={form.control}
             name="imageUrl"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="col-span-2 md:col-span-1">
                 <FormRequiredLabel label="Image Url" />
                 <FormControl>
                   <Input {...field} />
@@ -107,7 +107,11 @@ export default function ProductForm({
             )}
           />
 
-          <SelectField<ProductSchemaType> name="status" label="Status">
+          <SelectField<ProductSchemaType>
+            name="status"
+            label="Status"
+            className="col-span-2 md:col-span-1"
+          >
             {productStatuses.map((status) => (
               <SelectItem key={status} value={status}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}

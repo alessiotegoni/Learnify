@@ -1,4 +1,3 @@
-import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import {
@@ -16,20 +15,28 @@ import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons";
 import { asc, countDistinct, eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
+import { Plus } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 
-export default async function PageCourses() {
+export default async function CoursesPage() {
   const courses = await getCourses();
-
-  console.log("ciao");
 
   return (
     <>
-      <PageHeader title="Courses">
-        <Button asChild>
-          <Link href="/admin/courses/new">Create course</Link>
+      <PageHeader
+        title="Courses"
+        description="Manage your courses, sections, and lessons."
+      >
+        <Button asChild className="gap-1.5 rounded-full">
+          <Link href="/admin/courses/new">
+            <Plus className="size-4" />
+            Create Course
+          </Link>
         </Button>
       </PageHeader>
-      <CourseTable courses={courses} />
+      <div className="rounded-xl border overflow-hidden bg-card">
+        <CourseTable courses={courses} />
+      </div>
     </>
   );
 }
@@ -42,8 +49,6 @@ export async function getCourses() {
     getCourseSectionGlobalTag(),
     getLessonGlobalTag()
   );
-
-  console.log("getting courses");
 
   return db
     .select({

@@ -1,4 +1,3 @@
-import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogTrigger } from "@/components/ui/dialog";
@@ -14,6 +13,8 @@ import SortableLessonList from "@/features/lessons/components/SortableLessonList
 import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound } from "next/navigation";
+import { Plus } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 
 type Props = {
   params: Promise<{ courseId: string }>;
@@ -23,30 +24,36 @@ export default async function EditCoursePage({ params }: Props) {
   const { courseId } = await params;
 
   const course = await getCourse(courseId);
-
   if (!course) return notFound();
 
   const { id, name, description, sections } = course;
 
   return (
-    <>
-      <PageHeader title={course.name} />
-      <Tabs defaultValue="sections">
-        <TabsList>
+    <div className="max-w-xl">
+      <PageHeader
+        title={course.name}
+        description="Edit course details, manage sections and lessons."
+      />
+      <Tabs defaultValue="sections" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 h-11">
           <TabsTrigger value="sections">Sections</TabsTrigger>
           <TabsTrigger value="lessons">Lessons</TabsTrigger>
-          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="details">Course Details</TabsTrigger>
         </TabsList>
+
         <TabsContent value="sections">
           <Card>
-            <CardHeader className="flex items-center justify-between flex-row">
-              <CardTitle className="text-xl">Sections</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Sections</CardTitle>
               <SectionFormDialog
                 courseId={id}
                 sectionOrder={sections.length ? sections.at(-1)!.order + 1 : 0}
               >
                 <DialogTrigger asChild>
-                  <Button>Create Section</Button>
+                  <Button className="gap-1.5 rounded-full">
+                    <Plus className="h-4 w-4" />
+                    Create Section
+                  </Button>
                 </DialogTrigger>
               </SectionFormDialog>
             </CardHeader>
@@ -54,17 +61,22 @@ export default async function EditCoursePage({ params }: Props) {
               {sections.length ? (
                 <SortableSectionList courseId={courseId} sections={sections} />
               ) : (
-                <p className="font-medium mt-3">No sections yet</p>
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>
+                    No sections yet. Create your first section to get started.
+                  </p>
+                </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="lessons" className="space-y-4">
+
+        <TabsContent value="lessons" className="space-y-6">
           {sections.length ? (
             sections.map((section) => (
               <Card key={section.id}>
-                <CardHeader className="flex items-center justify-between flex-row">
-                  <CardTitle className="text-xl">{section.name}</CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>{section.name}</CardTitle>
                   <LessonFormDialog
                     courseId={id}
                     defaultSectionId={section.id}
@@ -76,7 +88,10 @@ export default async function EditCoursePage({ params }: Props) {
                     }
                   >
                     <DialogTrigger asChild>
-                      <Button>Create Lesson</Button>
+                      <Button className="gap-1.5 rounded-full">
+                        <Plus className="h-4 w-4" />
+                        Create Lesson
+                      </Button>
                     </DialogTrigger>
                   </LessonFormDialog>
                 </CardHeader>
@@ -89,24 +104,32 @@ export default async function EditCoursePage({ params }: Props) {
                       lessons={section.lessons}
                     />
                   ) : (
-                    <p className="font-medium mt-3">No lessons yet</p>
+                    <div className="text-center py-6 text-muted-foreground">
+                      <p>No lessons in this section yet.</p>
+                    </div>
                   )}
                 </CardContent>
               </Card>
             ))
           ) : (
-            <p className="font-medium mt-3">No sections yet</p>
+            <div className="text-center py-12 text-muted-foreground bg-card rounded-xl border">
+              <p className="mb-2">No sections available</p>
+              <p className="text-sm">
+                Create sections first before adding lessons.
+              </p>
+            </div>
           )}
         </TabsContent>
+
         <TabsContent value="details">
           <Card>
-            <CardHeader>
+            <CardContent className="pt-0">
               <CourseForm course={{ id, name, description }} />
-            </CardHeader>
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 }
 

@@ -97,7 +97,9 @@ export default function LessonForm({
 
         <SelectField<LessonSchemaType> name="courseSectionId" label="Section">
           {sections.map((section) => (
-            <SelectItem value={section.id}>{section.name}</SelectItem>
+            <SelectItem key={section.id} value={section.id}>
+              {section.name}
+            </SelectItem>
           ))}
         </SelectField>
 

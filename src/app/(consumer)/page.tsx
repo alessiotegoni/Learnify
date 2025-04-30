@@ -1,17 +1,20 @@
+import { SkeletonArray } from "@/components/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/drizzle/db";
-import ProductCard from "@/features/products/components/ProductCard";
+import ProductCard, {
+  ProductCardSkeleton,
+} from "@/features/products/components/ProductCard";
 import { getProductGlobalTag } from "@/features/products/db/cache";
 import { SignedIn } from "@clerk/nextjs";
 import { BookOpen, Star, Users } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function HomePage() {
-  const products = await getPublicProducts();
-
+export default function HomePage() {
   return (
     <>
       <section className="relative py-20 md:py-32 overflow-hidden">
@@ -92,9 +95,15 @@ export default async function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
-            ))}
+            <Suspense
+              fallback={
+                <SkeletonArray amount={3}>
+                  <ProductCardSkeleton />
+                </SkeletonArray>
+              }
+            >
+              <PublicProductsList />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -148,6 +157,14 @@ export default async function HomePage() {
       </section>
     </>
   );
+}
+
+async function PublicProductsList() {
+  const products = await getPublicProducts();
+
+  return products.map((product) => (
+    <ProductCard key={product.id} {...product} />
+  ));
 }
 
 export async function getPublicProducts() {

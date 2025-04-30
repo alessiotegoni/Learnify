@@ -1,4 +1,3 @@
-import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import {
@@ -11,18 +10,28 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import ProductsTable from "@/features/products/components/ProductsTable";
 import { getProductGlobalTag } from "@/features/products/db/cache";
+import { Plus } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 
-export default async function PageProducts() {
+export default async function ProductsPage() {
   const products = await getProducts();
 
   return (
     <>
-      <PageHeader title="Products">
-        <Button asChild>
-          <Link href="/admin/products/new">Create product</Link>
+      <PageHeader
+        title="Products"
+        description="Manage your products and their associated courses."
+      >
+        <Button asChild className="gap-1.5 rounded-full">
+          <Link href="/admin/products/new">
+            <Plus className="h-4 w-4" />
+            Create Product
+          </Link>
         </Button>
       </PageHeader>
-      <ProductsTable products={products} />
+      <div className="rounded-xl border overflow-hidden bg-card">
+        <ProductsTable products={products} />
+      </div>
     </>
   );
 }
@@ -30,8 +39,6 @@ export default async function PageProducts() {
 export async function getProducts() {
   "use cache";
   cacheTag(getProductGlobalTag());
-
-  console.log("getting products");
 
   return db
     .select({

@@ -1,10 +1,6 @@
-import { SkeletonArray, SkeletonText } from "@/components/Skeleton";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import type React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/drizzle/db";
 import {
   courseSections,
@@ -21,9 +17,19 @@ import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons";
 import { getProductGlobalTag } from "@/features/products/db/cache";
 import { getPurchaseGlobalTag } from "@/features/purchases/db/cache";
 import { formatNumber, formatPrice } from "@/lib/formatters";
+import {
+  BarChart3,
+  BookOpen,
+  GraduationCap,
+  LayoutList,
+  Package,
+  Receipt,
+  Users,
+} from "lucide-react";
 import { count, countDistinct, isNotNull, sql, sum } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { PropsWithChildren, Suspense } from "react";
+import { type PropsWithChildren, Suspense } from "react";
+import { SkeletonArray } from "@/components/Skeleton";
 
 export default async function AdminPage() {
   const {
@@ -35,69 +41,132 @@ export default async function AdminPage() {
   } = await getPurchaseDetails();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 md:grid-cols-4 gap-4">
-      <StatCard title="Net Sales">
-        {formatPrice(netSales, { showZeroAsNumber: true })}
-      </StatCard>
-      <StatCard title="Refunded Sales">
-        {formatPrice(totalRefunds, { showZeroAsNumber: true })}
-      </StatCard>
-      <StatCard title="Un-Refunded Purchases">
-        {formatNumber(netPurchases)}
-      </StatCard>
-      <StatCard title="Refunded Purchases">
-        {formatNumber(refundedPurchases)}
-      </StatCard>
-      <StatCard title="Purchases Per User">
-        {formatNumber(averageNetPurchasesPerCustomer, {
-          maximumFractionDigits: 2,
-        })}
-      </StatCard>
-      <Suspense fallback={<StatCardSkeletons />}>
-        <StatCard title="Students" stat={getTotalStudents()} />
-        <StatCard title="Products" stat={getTotalProducts()} />
-        <StatCard title="Courses" stat={getTotalCourses()} />
-        <StatCard title="Course Sections" stat={getTotalCourseSections()} />
-        <StatCard title="Lessons" stat={getTotalLessons()} />
-      </Suspense>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Overview of your platform's performance and statistics.
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Sales Statistics</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <StatCard
+            title="Net Sales"
+            icon={<Receipt className="size-5 text-primary" />}
+          >
+            {formatPrice(netSales, { showZeroAsNumber: true })}
+          </StatCard>
+          <StatCard
+            title="Refunded Sales"
+            icon={<Receipt className="size-5 text-yellow-500" />}
+          >
+            {formatPrice(totalRefunds, { showZeroAsNumber: true })}
+          </StatCard>
+          <StatCard
+            title="Purchases"
+            icon={<BarChart3 className="size-5 text-primary" />}
+          >
+            {formatNumber(netPurchases)}
+          </StatCard>
+          <StatCard
+            title="Refunded"
+            icon={<BarChart3 className="size-5 text-yellow-500" />}
+          >
+            {formatNumber(refundedPurchases)}
+          </StatCard>
+          <StatCard
+            title="Purchases Per User"
+            icon={<Users className="size-5 text-primary" />}
+          >
+            {formatNumber(averageNetPurchasesPerCustomer, {
+              maximumFractionDigits: 2,
+            })}
+          </StatCard>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Platform Statistics</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <Suspense
+            fallback={
+              <SkeletonArray amount={5}>
+                <StatCardSkeleton />
+              </SkeletonArray>
+            }
+          >
+            <StatCard
+              title="Students"
+              icon={<Users className="size-5 text-primary" />}
+              stat={getTotalStudents()}
+            />
+            <StatCard
+              title="Products"
+              icon={<Package className="size-5 text-primary" />}
+              stat={getTotalProducts()}
+            />
+            <StatCard
+              title="Courses"
+              icon={<BookOpen className="size-5 text-primary" />}
+              stat={getTotalCourses()}
+            />
+            <StatCard
+              title="Course Sections"
+              icon={<LayoutList className="size-5 text-primary" />}
+              stat={getTotalCourseSections()}
+            />
+            <StatCard
+              title="Lessons"
+              icon={<GraduationCap className="size-5 text-primary" />}
+              stat={getTotalLessons()}
+            />
+          </Suspense>
+        </div>
+      </div>
     </div>
   );
 }
 
 async function StatCard({
   title,
+  icon,
   stat,
   children,
 }: PropsWithChildren<{
   title: string;
+  icon?: React.ReactNode;
   stat?: Promise<number>;
 }>) {
   return (
     <Card>
-      <CardHeader className="text-center">
-        <CardDescription>{title}</CardDescription>
-        <CardTitle className="font-bold text-2xl">
-          {stat ? formatNumber(await stat) : children}
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
         </CardTitle>
+        {icon}
       </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">
+          {stat ? formatNumber(await stat) : children}
+        </div>
+      </CardContent>
     </Card>
   );
 }
 
-function StatCardSkeletons() {
+function StatCardSkeleton() {
   return (
-    <SkeletonArray amount={5}>
-      <Card className="animate-pulse">
-        <CardHeader className="text-center space-y-2">
-          <CardDescription>
-            <SkeletonText size="md" />
-          </CardDescription>
-          <CardTitle>
-            <SkeletonText size="lg" />
-          </CardTitle>
-        </CardHeader>
-      </Card>
-    </SkeletonArray>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <Skeleton className="h-5 w-20" />
+        <Skeleton className="size-5 rounded-full" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-8 w-24" />
+      </CardContent>
+    </Card>
   );
 }
 

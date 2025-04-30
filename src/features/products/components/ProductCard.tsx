@@ -1,4 +1,5 @@
 import { getPublicProducts } from "@/app/(consumer)/page";
+import { SkeletonButton, SkeletonText } from "@/components/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,5 +85,27 @@ export async function Price({ price }: { price: number }) {
       </div>
       <div>{formatPrice(price * (1 - coupon.discountPercentage))}</div>
     </Badge>
+  );
+}
+
+export function ProductCardSkeleton() {
+  return (
+    <Card className="group pt-0 gap-0 overflow-hidden">
+      <div className="relative aspect-video w-full overflow-hidden bg-muted animate-pulse" />
+      <CardHeader className="pt-4 mb-6">
+        <SkeletonText rows={1} size="lg" />
+        <SkeletonText rows={2} size="md" />
+      </CardHeader>
+      <CardContent className="pb-4 flex-grow">
+        <div className="flex items-center gap-4 text-sm">
+          <div className="h-4 w-20 bg-muted rounded animate-pulse" />
+          <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+          <div className="h-4 w-12 bg-muted rounded animate-pulse ml-auto" />
+        </div>
+      </CardContent>
+      <CardFooter className="pt-2 border-t">
+        <SkeletonButton className="w-full h-10 rounded-lg" />
+      </CardFooter>
+    </Card>
   );
 }

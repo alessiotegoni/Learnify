@@ -1,17 +1,25 @@
-import PageHeader from "@/components/PageHeader";
 import { db } from "@/drizzle/db";
 import { getCourseGlobalTag } from "@/features/courses/db/cache/courses";
 import ProductForm from "@/features/products/components/ProductForm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { Card, CardContent } from "@/components/ui/card";
+import PageHeader from "@/components/PageHeader";
 
 export default async function NewProductPage() {
   const courses = await getCourses();
 
   return (
-    <>
-      <PageHeader title="New Product" />
-      <ProductForm courses={courses} />
-    </>
+    <div className="max-w-md mx-auto">
+      <PageHeader
+        title="New Product"
+        description="Create a new product to sell on your platform."
+      />
+      <Card>
+        <CardContent className="pt-6">
+          <ProductForm courses={courses} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

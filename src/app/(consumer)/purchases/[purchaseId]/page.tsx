@@ -55,7 +55,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
   );
 
   return (
-    <div className="container">
+    <div className="container !max-w-3xl">
       <PageHeader title="Purchase Receipt">
         {receiptUrl && (
           <Button asChild variant="outline" className="gap-1.5 rounded-full">
@@ -68,7 +68,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
         )}
       </PageHeader>
 
-      <Card className="max-w-3xl mx-auto overflow-hidden">
+      <Card className="overflow-hidden">
         <CardHeader className="pb-6 border-b">
           <div className="flex justify-between items-start gap-4">
             <div className="space-y-1">
@@ -81,8 +81,8 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
               className={cn(
                 "px-3 py-1 text-sm font-medium",
                 purchase.refundedAt
-                  ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100 hover:text-yellow-800"
-                  : "bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800"
+                  ? "bg-yellow-100 text-yellow-800 border border-yellow-300 hover:bg-yellow-100 hover:text-yellow-800"
+                  : "bg-green-100 text-green-800 border border-green-300 hover:bg-green-100 hover:text-green-800"
               )}
             >
               {purchase.refundedAt ? "Refunded" : "Paid"}

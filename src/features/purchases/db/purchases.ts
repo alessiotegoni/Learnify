@@ -1,6 +1,7 @@
 import { db } from "@/drizzle/db";
 import { purchases } from "@/drizzle/schema";
 import { revalidatePurchaseCache } from "./cache";
+import { eq } from "drizzle-orm";
 
 export async function insertPurchase(
   data: typeof purchases.$inferInsert,
@@ -21,7 +22,11 @@ export async function updatePurchase(
   data: Partial<typeof purchases.$inferInsert>,
   trx: Omit<typeof db, "$client"> = db
 ) {
-  const [updatedPurchase] = await trx.update(purchases).set(data).returning();
+  const [updatedPurchase] = await trx
+    .update(purchases)
+    .set(data)
+    .where(eq(purchases.id, id))
+    .returning();
 
   if (!updatedPurchase) throw new Error("Error updating the purchase");
 

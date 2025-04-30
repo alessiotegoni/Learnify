@@ -51,7 +51,6 @@ export default function SortableList<T extends { id: string }>({
       setOptimisticItems(newItems);
 
       const res = await onOrderChange(newItems.map((item) => item.id));
-
       if (res.error) setOptimisticItems(optimisticItems);
 
       actionToast(res);
@@ -64,7 +63,7 @@ export default function SortableList<T extends { id: string }>({
         items={optimisticItems}
         strategy={verticalListSortingStrategy}
       >
-        <div className="flex flex-col">{children(optimisticItems)}</div>
+        <div className="flex flex-col gap-3">{children(optimisticItems)}</div>
       </SortableContext>
     </DndContext>
   );
