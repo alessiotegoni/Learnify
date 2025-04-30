@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/nextjs";
 import { BarChart3, BookOpen, Home, Package, Receipt } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import NavLink from "@/components/NavLink";
 
 export default function AdminLayout({
   children,
@@ -63,22 +64,5 @@ function Navbar() {
         </nav>
       </div>
     </header>
-  );
-}
-
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center text-sm font-medium transition-colors hover:text-primary"
-    >
-      {children}
-    </Link>
   );
 }

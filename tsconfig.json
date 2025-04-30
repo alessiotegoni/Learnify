@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(auth)/layout.tsx"
+    "src/app/(consumer)/(auth)/layout.tsx"
   ],
   "exclude": ["node_modules"]
 }

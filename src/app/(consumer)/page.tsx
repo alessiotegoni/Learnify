@@ -73,7 +73,7 @@ export default function HomePage() {
             <div className="relative aspect-video overflow-hidden rounded-xl">
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-background/0 z-10 rounded-xl"></div>
               <Image
-                src="/placeholder.svg?height=720&width=1280"
+                src="/imgs/learnify-banner.png"
                 alt="Students learning online"
                 width={1280}
                 height={720}
