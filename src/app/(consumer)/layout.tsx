@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 
 export default function ConsumerLayout({ children }: { children: ReactNode }) {
   return (
@@ -42,7 +42,7 @@ function Navbar() {
             <Home className="size-4" /> Home
           </NavLink>
           <SignedIn>
-            <NavLink href="/courses">
+            <NavLink href="/courses" matchExact>
               <BookOpen className="size-4" />
               My Courses
             </NavLink>
@@ -105,7 +105,7 @@ function MobileNav() {
             <Home className="size-5 mr-1" /> Home
           </NavLink>
           <SignedIn>
-            <NavLink href="/courses">
+            <NavLink href="/courses" matchExact>
               <BookOpen className="size-5 mr-1" />
               My Courses
             </NavLink>

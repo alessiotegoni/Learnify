@@ -13,13 +13,14 @@ import { getPurchaseIdTag } from "@/features/purchases/db/cache";
 import { formatDate, formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { getPurchaseDetails } from "@/services/stripe/actions/stripe";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser, User } from "@clerk/nextjs/server";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ExternalLink, FileText, Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import { isAdmin } from "@/services/clerk";
 
 type Props = {
   params: Promise<{ purchaseId: string }>;
@@ -45,7 +46,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
   const user = await currentUser();
   if (!user) return redirect("/sign-in");
 
-  const purchase = await getPurchase(user.id, purchaseId);
+  const purchase = await getPurchase(purchaseId, user.id, await isAdmin());
   if (!purchase) return notFound();
 
   const { receiptUrl, pricingRows } = await getPurchaseDetails(
@@ -132,7 +133,11 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
   );
 }
 
-async function getPurchase(userId: string, purchaseId: string) {
+async function getPurchase(
+  purchaseId: string,
+  userId: string,
+  isAdmin: boolean
+) {
   "use cache";
   cacheTag(getPurchaseIdTag(purchaseId));
 
@@ -145,6 +150,6 @@ async function getPurchase(userId: string, purchaseId: string) {
       stripeSessionId: true,
     },
     where: ({ id, clerkUserId }, { and, eq }) =>
-      and(eq(id, purchaseId), eq(clerkUserId, userId)),
+      and(eq(id, purchaseId), !isAdmin ? eq(clerkUserId, userId) : undefined),
   });
 }
