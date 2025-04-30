@@ -3,6 +3,7 @@ import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/next";
 import { env } from "./data/env/server";
 import { setUserCountryHeader } from "./lib/userCountryHeader";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isPublicRoute = createRouteMatcher([
@@ -46,8 +47,9 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isAdminRoute(req)) {
     const user = await auth.protect();
-    if (user.sessionClaims.role !== "admin")
-      return NextResponse.redirect("/", { status: 403 });
+    if (user.sessionClaims.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.nextUrl));
+    }
   }
 
   if (!isPublicRoute(req)) await auth.protect();

@@ -79,7 +79,7 @@ async function CourseGrid() {
           courses that interest you.
         </p>
         <Button asChild size="lg" className="rounded-full">
-          <Link href="/">Browse Courses</Link>
+          <Link href="/#courses">Browse Courses</Link>
         </Button>
       </div>
     );
@@ -200,7 +200,7 @@ export async function getUserCourses(userId: string) {
       lessons,
       and(
         eq(lessons.courseSectionId, courseSections.id),
-        inArray(lessons.status, ["public", "preview"])
+        eq(courseSections.status, "public")
       )
     )
     .leftJoin(
@@ -210,8 +210,9 @@ export async function getUserCourses(userId: string) {
         eq(userLessonComplete.clerkUserId, userId)
       )
     )
+    .where(eq(userCourseAccess.clerkUserId, userId))
     .orderBy(desc(courses.name))
-    .groupBy(courses.id, userCourseAccess.clerkUserId);
+    .groupBy(courses.id);
 
   cacheTag(
     ...dbCourses.flatMap((course) => [
