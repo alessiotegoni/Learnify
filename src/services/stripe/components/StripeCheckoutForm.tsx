@@ -1,6 +1,5 @@
 "use client"
 
-import { getPublicProduct } from "@/app/(consumer)/products/[productId]/purchase/page";
 import {
   EmbeddedCheckout,
   EmbeddedCheckoutProvider,
@@ -8,6 +7,7 @@ import {
 import { stripeClientPromise } from "../stripeClient";
 import { AwaitedReturn } from "@/lib/utils";
 import { getClientSessionSecret } from "../actions/stripe";
+import { getPublicProduct } from "@/features/products/queries/products";
 
 type Props = {
   product: AwaitedReturn<typeof getPublicProduct>;

@@ -1,11 +1,11 @@
 "use server";
 
-import { getPublicProduct } from "@/app/(consumer)/products/[productId]/purchase/page";
 import { getUserCoupon } from "@/lib/userCountryHeader";
 import { stripeServerClient } from "../stripeServer";
 import { AwaitedReturn } from "@/lib/utils";
 import { env } from "@/data/env/client";
 import Stripe from "stripe";
+import { getPublicProduct } from "@/features/products/queries/products";
 
 export async function getClientSessionSecret(
   product: AwaitedReturn<typeof getPublicProduct>,

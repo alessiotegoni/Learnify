@@ -19,6 +19,7 @@ type Props = {
     id: string;
     description: string | null;
     order: number;
+    seconds: number;
     status: LessonStatus;
     youtubeVideoId: string;
   }[];
