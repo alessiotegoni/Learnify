@@ -3,6 +3,7 @@
 import { mapCourse } from "@/app/(consumer)/courses/[courseId]/layout";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { YouTubeEvent } from "react-youtube";
 
 type LessonsInfo = Record<
   string,
@@ -152,6 +153,11 @@ export default function useHandleLessons(
     return lessonsInfo?.[courseId]?.currentLesson;
   }, []);
 
+  const getLessonDuration = useCallback(
+    (e: YouTubeEvent) => e.target.getDuration() as number,
+    []
+  );
+
   useEffect(() => {
     if (typeof lessonId !== "string" || !course) return;
 
@@ -169,6 +175,7 @@ export default function useHandleLessons(
     getLessonPercentage,
     saveLessonPercentage,
     getLessonCurrentTime,
+    getLessonDuration,
     saveLessonCurrentTime,
   };
 }

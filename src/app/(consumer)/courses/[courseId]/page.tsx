@@ -1,3 +1,4 @@
+import { FormattedDuration } from "@/components/FormattedDuration";
 import PageHeader from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,11 @@ import {
   userLessonComplete,
 } from "@/drizzle/schema";
 import { getCourseIdTag } from "@/features/courses/db/cache/courses";
+import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lessonsComplete";
 import { formatPlural } from "@/lib/formatters";
 import { auth } from "@clerk/nextjs/server";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, sql, sum } from "drizzle-orm";
 import { BookOpen, Clock, PlayCircle } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
@@ -61,7 +63,7 @@ async function CourseUserStats({ courseId }: { courseId: string }) {
   const { userId } = await auth();
   if (!userId) return null;
 
-  const stats = await getCourseUserStats(courseId, userId);
+  const stats = await getCourseStats(courseId, userId);
 
   return (
     <div className="space-y-4">
@@ -76,7 +78,7 @@ async function CourseUserStats({ courseId }: { courseId: string }) {
         </Badge>
         <Badge variant="secondary" className="gap-1.5">
           <Clock className="size-4" />
-          4h 30m total
+          <FormattedDuration totalSeconds={stats.totalLessonsSeconds} />
         </Badge>
       </div>
 
@@ -144,13 +146,20 @@ async function getCourse(id: string) {
   });
 }
 
-async function getCourseUserStats(courseId: string, userId: string) {
+async function getCourseStats(courseId: string, userId: string) {
   "use cache";
-  cacheTag(getCourseIdTag(courseId), getUserLessonCompleteUserTag(userId));
+  cacheTag(
+    getCourseIdTag(courseId),
+    getLessonCourseTag(courseId),
+    getUserLessonCompleteUserTag(userId)
+  );
 
   const [data] = await db
     .select({
       totalLessons: count(lessons),
+      totalLessonsSeconds: sql<number>`COALESCE(${sum(
+        lessons.seconds
+      )}, 0)`.mapWith(Number),
       completedLessons: count(userLessonComplete),
     })
     .from(courses)
@@ -165,5 +174,7 @@ async function getCourseUserStats(courseId: string, userId: string) {
     )
     .where(eq(courses.id, courseId));
 
-  return data ?? { totalLessons: 0, completedLessons: 0 };
+  return (
+    data ?? { totalLessons: 0, totalLessonsSeconds: 0, completedLessons: 0 }
+  );
 }

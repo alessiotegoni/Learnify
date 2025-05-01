@@ -21,6 +21,7 @@ type Props = {
     order: number;
     status: LessonStatus;
     youtubeVideoId: string;
+    seconds: number
   }
   lessonOrder?: number;
 };

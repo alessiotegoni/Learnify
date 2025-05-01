@@ -19,6 +19,7 @@ export const lessons = pgTable("lessons", {
   youtubeVideoId: text().notNull(),
   order: integer().notNull(),
   status: lessonStatusEnum().notNull().default("private"),
+  seconds: integer().notNull(),
   ...timestamps,
 });
 
@@ -27,5 +28,5 @@ export const lessonsRelations = relations(lessons, ({ one, many }) => ({
     references: [courseSections.id],
     fields: [lessons.courseSectionId],
   }),
-  completed: many(userLessonComplete)
+  completed: many(userLessonComplete),
 }));

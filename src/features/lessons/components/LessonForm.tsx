@@ -20,6 +20,9 @@ import { ComponentPropsWithoutRef } from "react";
 import LessonFormDialog from "./LessonFormDialog";
 import YoutubeVideoPlayer from "./YoutubeVideoPlayer";
 import SelectField from "@/components/SelectField";
+import useHandleLessons from "@/hooks/useHandleLessons";
+import { YouTubeEvent } from "react-youtube";
+import { toast } from "sonner";
 
 export default function LessonForm({
   sections,
@@ -31,6 +34,8 @@ export default function LessonForm({
 }: ComponentPropsWithoutRef<typeof LessonFormDialog> & {
   onSuccess?: () => void;
 }) {
+  const { getLessonDuration } = useHandleLessons();
+
   const form = useForm<LessonSchemaType>({
     resolver: zodResolver(lessonSchema),
     defaultValues: {
@@ -39,8 +44,19 @@ export default function LessonForm({
       description: lesson?.description || null,
       status: lesson?.status ?? "private",
       youtubeVideoId: lesson?.youtubeVideoId ?? "",
+      seconds: lesson?.seconds ?? 0,
     },
   });
+
+  const setLessonDuration = (e: YouTubeEvent) => {
+    const duration = getLessonDuration(e);
+
+    if (!duration) {
+      toast.error("Invalid video");
+    } else {
+      form.setValue("seconds", duration);
+    }
+  };
 
   async function onSubmit(data: LessonSchemaType) {
     const action = !lesson
@@ -61,7 +77,9 @@ export default function LessonForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 "
       >
-        {!!videoId && <YoutubeVideoPlayer videoId={videoId} />}
+        {!!videoId && (
+          <YoutubeVideoPlayer videoId={videoId} onReady={setLessonDuration} />
+        )}
         <FormField
           control={form.control}
           name="name"

@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { ReactNode } from "react";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,7 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </ClerkProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

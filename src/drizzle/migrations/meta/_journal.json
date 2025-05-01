@@ -8,6 +8,20 @@
       "when": 1745412622145,
       "tag": "0000_fuzzy_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746114908660,
+      "tag": "0001_typical_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746115146789,
+      "tag": "0002_icy_phalanx",
+      "breakpoints": true
     }
   ]
 }

@@ -15,5 +15,7 @@ export function actionToast(
   return toast[variant](message, toastData);
 }
 
-export type AwaitedReturn<T extends (...args: unknown[]) => unknown> =
-  NonNullable<Awaited<ReturnType<T>>>;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type AwaitedReturn<T extends (...args: any[]) => any> = NonNullable<
+  Awaited<ReturnType<T>>
+>;

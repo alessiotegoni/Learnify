@@ -9,13 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatPrice } from "@/lib/formatters";
+import { formatPlural, formatPrice } from "@/lib/formatters";
 import { getUserCoupon } from "@/lib/userCountryHeader";
 import { BookOpen, Star, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { getPublicProducts } from "../queries/products";
+import { AwaitedReturn } from "@/lib/utils";
 
 export default function ProductCard({
   id,
@@ -23,7 +24,9 @@ export default function ProductCard({
   description,
   imageUrl,
   priceInDollars,
-}: Awaited<ReturnType<typeof getPublicProducts>>[0]) {
+  lessonsCount,
+  studentsCount,
+}: AwaitedReturn<typeof getPublicProducts>[0]) {
   return (
     <Card className="group pt-0 gap-0 overflow-hidden transition-all hover:shadow-md">
       <div className="relative aspect-video w-full overflow-hidden">
@@ -47,18 +50,30 @@ export default function ProductCard({
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-4 flex-grow">z
+      <CardContent className="pb-4 flex-grow">
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-1.5">
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-            <span>12 lessons</span>
+            <BookOpen className="size-4 text-muted-foreground" />
+            <span>
+              {formatPlural(
+                lessonsCount,
+                { singular: "lesson", plural: "lessons" },
+                true
+              )}
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span>1.2k students</span>
+            <Users className="size-4 text-muted-foreground" />
+            <span>
+              {formatPlural(
+                studentsCount,
+                { singular: "student", plural: "students" },
+                true
+              )}
+            </span>
           </div>
           <div className="flex items-center gap-1.5 ml-auto">
-            <Star className="h-4 w-4 fill-primary text-primary" />
+            <Star className="size-4 fill-primary text-primary" />
             <span>4.8</span>
           </div>
         </div>

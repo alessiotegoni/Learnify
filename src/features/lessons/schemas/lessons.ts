@@ -10,6 +10,7 @@ export const lessonSchema = z.object({
   name: z.string().min(1, "Required"),
   status: z.enum(lessonStatuses),
   youtubeVideoId: z.string().min(1, "Required"),
+  seconds: z.number().min(1, "Lesson duration must be greather then 1 second"),
 });
 
 export type LessonSchemaType = z.infer<typeof lessonSchema>;

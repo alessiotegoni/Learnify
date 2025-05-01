@@ -1,3 +1,4 @@
+import { FormattedDuration } from "@/components/FormattedDuration";
 import PageHeader from "@/components/PageHeader";
 import {
   SkeletonArray,
@@ -32,7 +33,7 @@ import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lessonsComplete";
 import { formatPlural } from "@/lib/formatters";
 import { auth } from "@clerk/nextjs/server";
-import { and, countDistinct, desc, eq } from "drizzle-orm";
+import { and, count, countDistinct, desc, eq, sql, sum } from "drizzle-orm";
 import { BookOpen, Clock, PlayCircle } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
@@ -121,7 +122,7 @@ async function CourseGrid() {
         <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
-            <span>4h 30m total</span>
+            <FormattedDuration totalSeconds={course.totalLessonsSeconds} />
           </div>
           <div className="flex items-center gap-1.5">
             <PlayCircle className="h-4 w-4" />
@@ -171,6 +172,9 @@ async function getUserCourses(userId: string) {
       description: courses.description,
       sectionsCount: countDistinct(courseSections),
       lessonsCount: countDistinct(lessons),
+      totalLessonsSeconds: sql<number>`COALESCE(${sum(
+        lessons.seconds
+      )}, 0)`.mapWith(Number),
       completedLessonsCount: countDistinct(userLessonComplete),
     })
     .from(courses)
@@ -213,6 +217,8 @@ async function getUserCourses(userId: string) {
     .where(eq(userCourseAccess.clerkUserId, userId))
     .orderBy(desc(courses.name))
     .groupBy(courses.id);
+
+  console.log(dbCourses);
 
   cacheTag(
     ...dbCourses.flatMap((course) => [

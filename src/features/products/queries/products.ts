@@ -1,29 +1,51 @@
 import { getProductIdTag } from "../db/cache";
 import {
   courseProduct,
+  courses,
+  courseSections,
+  lessons,
   products as productsTable,
   purchases,
+  userCourseAccess,
 } from "@/drizzle/schema";
-import { asc, countDistinct, eq } from "drizzle-orm";
+import { asc, count, countDistinct, desc, eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getProductGlobalTag } from "@/features/products/db/cache";
 import { db } from "@/drizzle/db";
+import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons";
+import { getUserProductAccessGlobalTag } from "@/features/courses/db/cache/userCourseAccess";
 
 export async function getPublicProducts() {
   "use cache";
-  cacheTag(getProductGlobalTag());
+  cacheTag(
+    getProductGlobalTag(),
+    getLessonGlobalTag(),
+    getUserProductAccessGlobalTag()
+  );
 
-  return db.query.products.findMany({
-    columns: {
-      id: true,
-      name: true,
-      description: true,
-      priceInDollars: true,
-      imageUrl: true,
-    },
-    where: ({ status }, { eq }) => eq(status, "public"),
-    orderBy: ({ createdAt }, { asc }) => asc(createdAt),
-  });
+  const products = await db
+    .select({
+      id: productsTable.id,
+      name: productsTable.name,
+      description: productsTable.description,
+      priceInDollars: productsTable.priceInDollars,
+      imageUrl: productsTable.imageUrl,
+      lessonsCount: count(lessons),
+      studentsCount: countDistinct(userCourseAccess),
+    })
+    .from(productsTable)
+    .leftJoin(
+      userCourseAccess,
+      eq(userCourseAccess.productId, productsTable.id)
+    )
+    .leftJoin(courseProduct, eq(courseProduct.productId, productsTable.id))
+    .leftJoin(courses, eq(courses.id, courseProduct.courseId))
+    .leftJoin(courseSections, eq(courseSections.courseId, courses.id))
+    .leftJoin(lessons, eq(lessons.courseSectionId, courseSections.id))
+    .orderBy(desc(productsTable.createdAt))
+    .groupBy(productsTable.id);
+
+  return products;
 }
 
 export async function getPublicProduct(productId: string) {

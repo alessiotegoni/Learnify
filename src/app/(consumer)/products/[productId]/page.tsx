@@ -38,6 +38,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { FormattedDuration } from "@/components/FormattedDuration";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -45,15 +46,20 @@ type Props = {
 
 export default async function ProductPage({ params }: Props) {
   const { productId } = await params;
-  const product = await getPublicProduct(productId);
 
+  const product = await getPublicProduct(productId);
   if (!product) notFound();
 
   const courseCount = product.courses.length;
   const lessonsCount = sumArray(product.courses, (course) =>
     sumArray(course.sections, (section) => section.lessons.length)
   );
-
+  const totalSeconds = sumArray(product.courses, (course) =>
+    sumArray(course.sections, (section) =>
+      sumArray(section.lessons, (lesson) => lesson.seconds)
+    )
+  );
+  
   return (
     <div className="container grid md:grid-cols-3 gap-10">
       <div className="md:col-span-2 space-y-8">
@@ -67,7 +73,7 @@ export default async function ProductPage({ params }: Props) {
 
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center gap-1.5">
-              <BookOpen className="h-5 w-5 text-primary" />
+              <BookOpen className="size-5 text-primary" />
               <span>
                 {formatPlural(
                   courseCount,
@@ -77,7 +83,7 @@ export default async function ProductPage({ params }: Props) {
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <VideoIcon className="h-5 w-5 text-primary" />
+              <VideoIcon className="size-5 text-primary" />
               <span>
                 {formatPlural(
                   lessonsCount,
@@ -87,11 +93,11 @@ export default async function ProductPage({ params }: Props) {
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="h-5 w-5 text-primary" />
-              <span>8 hours total</span>
+              <Clock className="size-5 text-primary" />
+              <FormattedDuration totalSeconds={totalSeconds} />
             </div>
             <div className="flex items-center gap-1.5">
-              <Star className="h-5 w-5 text-primary fill-primary" />
+              <Star className="size-5 text-primary fill-primary" />
               <span className="font-medium">4.8</span>
               <span className="text-muted-foreground">(120 reviews)</span>
             </div>
@@ -225,7 +231,7 @@ export default async function ProductPage({ params }: Props) {
                   "30-day money-back guarantee",
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="size-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -317,7 +323,12 @@ async function getPublicProduct(id: string) {
                   orderBy: ({ order }, { asc }) => asc(order),
                   with: {
                     lessons: {
-                      columns: { id: true, name: true, status: true },
+                      columns: {
+                        id: true,
+                        name: true,
+                        status: true,
+                        seconds: true,
+                      },
                       where: ({ status }, { inArray }) =>
                         inArray(status, ["public", "preview"]),
                       orderBy: ({ order }, { asc }) => asc(order),
@@ -331,7 +342,7 @@ async function getPublicProduct(id: string) {
       },
     })
     .then((product) => {
-      if (!product) return product;
+      if (!product) return null;
 
       const { courseProduct, ...restProduct } = product;
       return {

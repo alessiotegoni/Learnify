@@ -1,0 +1,1 @@
+ALTER TABLE "lessons" ADD COLUMN "seconds" integer DEFAULT 0;
