@@ -1,13 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import FormRequiredLabel from "./FormRequiredLabel";
 import { FormControl, FormField, FormItem, FormMessage } from "./ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { PropsWithChildren } from "react";
 
 type Props<T> = PropsWithChildren<{

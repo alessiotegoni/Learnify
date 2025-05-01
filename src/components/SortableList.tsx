@@ -33,7 +33,7 @@ export default function SortableList<T extends { id: string }>({
   const dndContextId = useId();
 
   const [optimisticItems, setOptimisticItems] = useOptimistic(items);
-  const [_, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   function handleDragEnd({ active, over }: DragEndEvent) {
     const activeId = active.id.toString();

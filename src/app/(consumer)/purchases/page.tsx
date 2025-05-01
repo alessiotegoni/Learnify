@@ -34,8 +34,8 @@ async function SuspenseBoundary() {
         </div>
         <h3 className="text-xl font-semibold mb-2">No Purchase History</h3>
         <p className="text-muted-foreground mb-6 max-w-md">
-          You haven't made any purchases yet. Browse our catalog to find courses
-          that interest you.
+          You haven&apos;t made any purchases yet. Browse our catalog to find
+          courses that interest you.
         </p>
         <Button asChild size="lg" className="rounded-full">
           <Link href="/">Browse Courses</Link>

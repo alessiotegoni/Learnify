@@ -5,13 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { db } from "@/drizzle/db";
-import { getProductIdTag } from "@/features/products/db/cache";
 import { userOwnsProduct } from "@/features/products/db/products";
 import StripeCheckoutForm from "@/services/stripe/components/StripeCheckoutForm";
 import { SignIn, SignUp } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";

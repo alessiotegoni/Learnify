@@ -45,7 +45,7 @@ export default async function AdminPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight mb-2">Dashboard</h1>
         <p className="text-muted-foreground">
-          Overview of your platform's performance and statistics.
+          Overview of your platform&apos;s performance and statistics.
         </p>
       </div>
 

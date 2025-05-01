@@ -12,12 +12,13 @@ import { formatPlural } from "@/lib/formatters";
 import { Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { deleteCourse } from "../actions/courses";
-import { getCourses } from "@/app/admin/courses/page";
+import { getCourses } from "../queries/courses";
+import { AwaitedReturn } from "@/lib/utils";
 
 export default function CourseTable({
   courses,
 }: {
-  courses: Awaited<ReturnType<typeof getCourses>>;
+  courses: AwaitedReturn<typeof getCourses>;
 }) {
   return (
     <Table>

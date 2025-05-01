@@ -1,16 +1,12 @@
 import { SkeletonArray } from "@/components/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { db } from "@/drizzle/db";
 import ProductCard, {
   ProductCardSkeleton,
 } from "@/features/products/components/ProductCard";
-import { getProductGlobalTag } from "@/features/products/db/cache";
 import { getPublicProducts } from "@/features/products/queries/products";
 import { SignedIn } from "@clerk/nextjs";
 import { BookOpen, Star, Users } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";

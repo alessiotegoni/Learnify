@@ -3,7 +3,6 @@ import { pgTable, text } from "drizzle-orm/pg-core";
 import { id, timestamps } from "../schemaHelpers";
 import { courseProduct } from "./courseProduct";
 import { courseSections } from "./courseSection";
-import { userCourseAccess } from "./userCourseAccess";
 
 export const courses = pgTable("courses", {
   id,

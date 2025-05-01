@@ -13,7 +13,7 @@ import { getPurchaseIdTag } from "@/features/purchases/db/cache";
 import { formatDate, formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { getPurchaseDetails } from "@/services/stripe/actions/stripe";
-import { auth, currentUser, User } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";

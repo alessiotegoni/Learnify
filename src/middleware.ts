@@ -3,7 +3,6 @@ import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/next";
 import { env } from "./data/env/server";
 import { setUserCountryHeader } from "./lib/userCountryHeader";
 import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isPublicRoute = createRouteMatcher([

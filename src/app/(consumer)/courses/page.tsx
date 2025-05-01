@@ -32,7 +32,7 @@ import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lessonsComplete";
 import { formatPlural } from "@/lib/formatters";
 import { auth } from "@clerk/nextjs/server";
-import { and, countDistinct, desc, eq, inArray } from "drizzle-orm";
+import { and, countDistinct, desc, eq } from "drizzle-orm";
 import { BookOpen, Clock, PlayCircle } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
@@ -75,8 +75,8 @@ async function CourseGrid() {
         </div>
         <h3 className="text-xl font-semibold mb-2">No courses yet</h3>
         <p className="text-muted-foreground mb-6 max-w-md">
-          You haven't enrolled in any courses yet. Browse our catalog to find
-          courses that interest you.
+          You haven&apos;t enrolled in any courses yet. Browse our catalog to
+          find courses that interest you.
         </p>
         <Button asChild size="lg" className="rounded-full">
           <Link href="/#courses">Browse Courses</Link>

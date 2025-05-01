@@ -1,8 +1,5 @@
 import { env } from "@/data/env/server";
-import {
-  revokeUserCourseAccess,
-  revokeUserCourseAllAccesses,
-} from "@/features/courses/db/userCourseAccess";
+import { revokeUserCourseAllAccesses } from "@/features/courses/db/userCourseAccess";
 import { setUserRole } from "@/services/clerk";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";

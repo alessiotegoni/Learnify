@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -16,13 +15,7 @@ import { Button } from "@/components/ui/button";
 import { actionToast } from "@/lib/utils";
 import { CourseSectionStatus, courseSectionStatuses } from "@/drizzle/schema";
 import { sectionSchema, SectionSchemaType } from "../schemas/sections";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SelectItem } from "@/components/ui/select";
 import { createSection, updateSection } from "../actions/sections";
 import SelectField from "@/components/SelectField";
 

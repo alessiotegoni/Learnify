@@ -1,4 +1,4 @@
-import { SkeletonButton, SkeletonText } from "@/components/Skeleton";
+import { SkeletonText } from "@/components/Skeleton";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { userLessonComplete } from "@/drizzle/schema";
@@ -14,7 +14,6 @@ import { auth } from "@clerk/nextjs/server";
 import { and, count, eq } from "drizzle-orm";
 import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

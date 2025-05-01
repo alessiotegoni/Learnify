@@ -47,7 +47,7 @@ export default function ProductCard({
           {description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-4 flex-grow">
+      <CardContent className="pb-4 flex-grow">z
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-1.5">
             <BookOpen className="h-4 w-4 text-muted-foreground" />

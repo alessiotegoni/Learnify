@@ -3,9 +3,12 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ComponentProps } from "react";
+import { ReactNode } from "react";
 
-type NavLinkProps = ComponentProps<typeof Link> & {
+type Props = {
+  href: string;
+  className?: string;
+  children?: ReactNode;
   matchExact?: boolean;
 };
 
@@ -14,26 +17,26 @@ export default function NavLink({
   className,
   children,
   matchExact = false,
-  ...props
-}: NavLinkProps) {
+}: Props) {
+  const isActive = useMatch(href, matchExact);
+
   return (
     <Link
       href={href}
       className={cn(
         "text-sm font-medium transition-colors flex items-center gap-1",
-        typeof href === "string" && isActive(href, matchExact)
+        typeof href === "string" && isActive
           ? "text-primary hover:text-primary/80"
           : "hover:text-primary",
         className
       )}
-      {...props}
     >
       {children}
     </Link>
   );
 }
 
-const isActive = (href: string, matchExact: boolean) => {
+const useMatch = (href: string, matchExact: boolean) => {
   const pathname = usePathname();
 
   const isAdmin = href === "/admin";

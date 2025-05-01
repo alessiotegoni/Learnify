@@ -8,8 +8,7 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import ActionButton from "@/components/ActionButton";
 import LessonFormDialog from "./LessonFormDialog";
 import { deleteLesson, updateLessonsOrder } from "../actions/lessons";
-import { LessonSchemaType } from "../schemas/lessons";
-import { lessons, LessonStatus } from "@/drizzle/schema";
+import { LessonStatus } from "@/drizzle/schema";
 
 type Props = {
   courseId: string;

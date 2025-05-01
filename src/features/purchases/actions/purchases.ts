@@ -38,6 +38,8 @@ export async function refundPurchase(purchaseId: string) {
       });
       await revokeUserCourseAccess(refundedPurchase, trx);
     } catch (err) {
+      console.error(`Error refunding purchase [${purchaseId}]: ${err}`);
+
       trx.rollback();
       return { error: true, message: "Error refunding this purchase" };
     }

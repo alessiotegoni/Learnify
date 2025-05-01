@@ -137,7 +137,7 @@ function removePickedOption(groupOption: GroupOption, picked: Option[]) {
 }
 
 function isOptionsExist(groupOption: GroupOption, targetOption: Option[]) {
-  for (const [_, value] of Object.entries(groupOption)) {
+  for (const [, value] of Object.entries(groupOption)) {
     if (
       value.some((option) => targetOption.find((p) => p.value === option.value))
     ) {
