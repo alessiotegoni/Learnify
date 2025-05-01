@@ -33,7 +33,7 @@ import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lessonsComplete";
 import { formatPlural } from "@/lib/formatters";
 import { auth } from "@clerk/nextjs/server";
-import { and, count, countDistinct, desc, eq, sql, sum } from "drizzle-orm";
+import { and, countDistinct, desc, eq, sql, sum } from "drizzle-orm";
 import { BookOpen, Clock, PlayCircle } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
