@@ -1,6 +1,6 @@
 "use client";
 
-import { mapCourse } from "@/app/(consumer)/courses/[courseId]/layout";
+import { mapCourse } from "@/lib/mapCourse";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { YouTubeEvent } from "react-youtube";

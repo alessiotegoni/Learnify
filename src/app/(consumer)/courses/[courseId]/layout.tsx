@@ -6,6 +6,7 @@ import { getCourseIdTag } from "@/features/courses/db/cache/courses";
 import { getCourseSectionCourseTag } from "@/features/coursesSections/db/cache";
 import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons";
 import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/lessonsComplete";
+import { mapCourse } from "@/lib/mapCourse";
 import type { AwaitedReturn } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, Info } from "lucide-react";
@@ -121,20 +122,4 @@ async function getCompletedLessonIds(userId: string) {
   });
 
   return data.map((d) => d.lessonId);
-}
-
-export function mapCourse(
-  course: AwaitedReturn<typeof getCourse>,
-  completedLessonIds: string[]
-) {
-  return {
-    ...course,
-    sections: course.sections.map((section) => ({
-      ...section,
-      lessons: section.lessons.map((lesson) => ({
-        ...lesson,
-        isComplete: completedLessonIds.includes(lesson.id),
-      })),
-    })),
-  };
 }

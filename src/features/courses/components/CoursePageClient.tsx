@@ -1,6 +1,5 @@
 "use client";
 
-import { mapCourse } from "@/app/(consumer)/courses/[courseId]/layout";
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import useHandleLessons from "@/hooks/useHandleLessons";
+import { mapCourse } from "@/lib/mapCourse";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, Video } from "lucide-react";
 import Link from "next/link";
