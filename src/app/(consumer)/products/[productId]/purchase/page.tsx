@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -11,7 +12,6 @@ import { SignIn, SignUp } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import { getPublicProduct } from "@/features/products/queries/products";
@@ -27,13 +27,7 @@ export default async function PurchaseProductPage({
 }: Props) {
   return (
     <div className="container">
-      <Suspense
-        fallback={
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          </div>
-        }
-      >
+      <Suspense fallback={<PurchaseSkeleton />}>
         <SuspendedComponent params={params} searchParams={searchParams} />
       </Suspense>
     </div>
@@ -123,5 +117,60 @@ async function SuspendedComponent({ params, searchParams }: Props) {
         </CardContent>
       </Card>
     </>
+  );
+}
+
+function PurchaseSkeleton() {
+  return (
+    <div className="container">
+      <div className="mb-8">
+        <Skeleton className="h-9 w-64 mb-2" />
+        <Skeleton className="h-5 w-96" />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {/* Product card */}
+        <Card className="overflow-hidden">
+          <div className="aspect-video relative bg-muted animate-pulse" />
+          <CardHeader>
+            <Skeleton className="h-6 w-3/4 mb-1" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </CardHeader>
+        </Card>
+
+        {/* Checkout form */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40 mb-1" />
+            <Skeleton className="h-4 w-64" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-10 w-full rounded-md" />
+            </div>
+
+            <div className="space-y-4 pt-4">
+              <div className="flex justify-between">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-5 w-20" />
+              </div>
+              <div className="flex justify-between">
+                <Skeleton className="h-6 w-32 font-bold" />
+                <Skeleton className="h-6 w-24 font-bold" />
+              </div>
+            </div>
+
+            <Skeleton className="h-12 w-full rounded-full mt-4" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

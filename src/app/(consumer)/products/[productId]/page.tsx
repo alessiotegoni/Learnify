@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: Props) {
       sumArray(section.lessons, (lesson) => lesson.seconds)
     )
   );
-  
+
   return (
     <div className="container grid md:grid-cols-3 gap-10">
       <div className="md:col-span-2 space-y-8">
