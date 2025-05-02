@@ -46,16 +46,16 @@ type Props = {
 };
 
 export default async function ProductPage({ params }: Props) {
+  const { productId } = await params;
+
   return (
     <Suspense fallback={<ProductPageSkeleton />}>
-      <SuspenseBoundary params={params} />
+      <SuspenseBoundary productId={productId} />
     </Suspense>
   );
 }
 
-async function SuspenseBoundary({ params }: Props) {
-  const { productId } = await params;
-
+async function SuspenseBoundary({ productId }: { productId: string }) {
   const product = await getPublicProduct(productId);
   if (!product) notFound();
 
