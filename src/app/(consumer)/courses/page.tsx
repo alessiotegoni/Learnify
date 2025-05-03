@@ -217,9 +217,7 @@ async function getUserCourses(userId: string) {
     .where(eq(userCourseAccess.clerkUserId, userId))
     .orderBy(desc(courses.name))
     .groupBy(courses.id);
-
-  console.log(dbCourses);
-
+    
   cacheTag(
     ...dbCourses.flatMap((course) => [
       getCourseIdTag(course.id),
