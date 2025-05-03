@@ -17,17 +17,19 @@ import Link from "next/link";
 import { ReactNode, Suspense } from "react";
 
 export default function ConsumerLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex min-h-dvh flex-col">
-      <Suspense>
-        <Navbar />
-        <main className="flex-1">
-          <Suspense>{children}</Suspense>
-        </main>
-        <Footer />
-      </Suspense>
-    </div>
-  );
+  return children;
+
+  // return (
+  //   <div className="flex min-h-dvh flex-col">
+  //     <Suspense>
+  //       <Navbar />
+  //       <main className="flex-1">
+  //         <Suspense>{children}</Suspense>
+  //       </main>
+  //       <Footer />
+  //     </Suspense>
+  //   </div>
+  // );
 }
 
 function Navbar() {
