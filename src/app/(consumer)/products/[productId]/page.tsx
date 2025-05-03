@@ -46,18 +46,20 @@ type Props = {
 };
 
 export default async function ProductPage({ params }: Props) {
-  const { productId } = await params;
+  const productId = params.then((p) => p.productId);
 
   return (
     <Suspense fallback={<ProductPageSkeleton />}>
-      <SuspenseBoundary productId={productId} />
+      <SuspenseBoundary params={productId} />
     </Suspense>
   );
 }
 
-async function SuspenseBoundary({ productId }: { productId: string }) {
+async function SuspenseBoundary({ params }: { params: Promise<string> }) {
+  const productId = await params;
+
   const product = await getPublicProduct(productId);
-  if (!product) notFound();
+  if (!product) return notFound();
 
   const courseCount = product.courses.length;
   const lessonsCount = sumArray(product.courses, (course) =>
