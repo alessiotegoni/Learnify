@@ -19,9 +19,13 @@ import { ReactNode, Suspense } from "react";
 export default function ConsumerLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <Navbar />
-      <main className="flex-1">{children}</main>
-      <Footer />
+      <Suspense>
+        <Navbar />
+        <main className="flex-1">
+          <Suspense>{children}</Suspense>
+        </main>
+        <Footer />
+      </Suspense>
     </div>
   );
 }
