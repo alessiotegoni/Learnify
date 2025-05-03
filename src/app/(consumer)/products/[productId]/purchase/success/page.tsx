@@ -12,7 +12,7 @@ type Props = {
   params: Promise<{ productId: string }>;
 };
 
-export default async function ProductPurchaseSuccessPage({ params }: Props) {
+export default function ProductPurchaseSuccessPage({ params }: Props) {
   return (
     <Suspense fallback={<PurchaseSuccessSkeleton />}>
       <SuspenseBoundary params={params} />

@@ -48,8 +48,7 @@
 // { params }: Props
 
 export default function ProductPage() {
-
-  return null
+  return null;
 
   // return (
   //   <Suspense fallback={<ProductPageSkeleton />}>
