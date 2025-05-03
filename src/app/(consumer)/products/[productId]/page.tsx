@@ -46,17 +46,7 @@ type Props = {
 };
 
 export default async function ProductPage({ params }: Props) {
-  const productId = params.then((p) => p.productId);
-
-  return (
-    <Suspense fallback={<ProductPageSkeleton />}>
-      <SuspenseBoundary params={productId} />
-    </Suspense>
-  );
-}
-
-async function SuspenseBoundary({ params }: { params: Promise<string> }) {
-  const productId = await params;
+  const { productId } = await params;
 
   const product = await getPublicProduct(productId);
   if (!product) return notFound();
@@ -259,6 +249,211 @@ async function SuspenseBoundary({ params }: { params: Promise<string> }) {
     </div>
   );
 }
+
+// async function SuspenseBoundary({ params }: { params: Promise<string> }) {
+//   const productId = await params;
+
+//   const product = await getPublicProduct(productId);
+//   if (!product) return notFound();
+
+//   const courseCount = product.courses.length;
+//   const lessonsCount = sumArray(product.courses, (course) =>
+//     sumArray(course.sections, (section) => section.lessons.length)
+//   );
+//   const totalSeconds = sumArray(product.courses, (course) =>
+//     sumArray(course.sections, (section) =>
+//       sumArray(section.lessons, (lesson) => lesson.seconds)
+//     )
+//   );
+
+//   return (
+//     <div className="container grid md:grid-cols-3 gap-10">
+//       <div className="md:col-span-2 space-y-8">
+//         <div>
+//           <h1 className="text-3xl font-bold tracking-tight mb-2">
+//             {product.name}
+//           </h1>
+//           <p className="text-xl text-muted-foreground mb-4">
+//             {product.description}
+//           </p>
+
+//           <div className="flex flex-wrap gap-4 items-center">
+//             <div className="flex items-center gap-1.5">
+//               <BookOpen className="size-5 text-primary" />
+//               <span>
+//                 {formatPlural(
+//                   courseCount,
+//                   { singular: "course", plural: "courses" },
+//                   true
+//                 )}
+//               </span>
+//             </div>
+//             <div className="flex items-center gap-1.5">
+//               <VideoIcon className="size-5 text-primary" />
+//               <span>
+//                 {formatPlural(
+//                   lessonsCount,
+//                   { singular: "lesson", plural: "lessons" },
+//                   true
+//                 )}
+//               </span>
+//             </div>
+//             <div className="flex items-center gap-1.5">
+//               <Clock className="size-5 text-primary" />
+//               <FormattedDuration totalSeconds={totalSeconds} />
+//             </div>
+//             <div className="flex items-center gap-1.5">
+//               <Star className="size-5 text-primary fill-primary" />
+//               <span className="font-medium">4.8</span>
+//               <span className="text-muted-foreground">(120 reviews)</span>
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="aspect-video relative rounded-xl overflow-hidden">
+//           <Image
+//             src={product.imageUrl || "/placeholder.svg"}
+//             fill
+//             alt={product.name}
+//             className="object-cover"
+//             priority
+//           />
+//         </div>
+
+//         {product.courses.length ? (
+//           <div className="space-y-6">
+//             <h2 className="text-2xl font-semibold">Course Content</h2>
+//             <div className="grid grid-cols-1 gap-6">
+//               {product.courses.map((course) => (
+//                 <Card key={course.id}>
+//                   <CardHeader className="pb-3">
+//                     <CardTitle>{course.name}</CardTitle>
+//                     <CardDescription>
+//                       {formatPlural(
+//                         course.sections.length,
+//                         { singular: "section", plural: "sections" },
+//                         true
+//                       )}{" "}
+//                       •{" "}
+//                       {formatPlural(
+//                         sumArray(
+//                           course.sections,
+//                           (section) => section.lessons.length
+//                         ),
+//                         { singular: "lesson", plural: "lessons" },
+//                         true
+//                       )}
+//                     </CardDescription>
+//                   </CardHeader>
+//                   <CardContent>
+//                     <Accordion type="multiple" className="space-y-2">
+//                       {course.sections.map((section) => (
+//                         <AccordionItem
+//                           key={section.id}
+//                           value={section.id}
+//                           className="border rounded-lg px-4"
+//                         >
+//                           <AccordionTrigger className="py-3 hover:no-underline">
+//                             <div className="flex flex-col items-start text-left">
+//                               <span className="text-base font-medium">
+//                                 {section.name}
+//                               </span>
+//                               <span className="text-sm text-muted-foreground">
+//                                 {formatPlural(
+//                                   section.lessons.length,
+//                                   { singular: "lesson", plural: "lessons" },
+//                                   true
+//                                 )}
+//                               </span>
+//                             </div>
+//                           </AccordionTrigger>
+//                           <AccordionContent className="pt-1 pb-3">
+//                             <ul className="space-y-3">
+//                               {section.lessons.map((lesson) => (
+//                                 <li
+//                                   key={lesson.id}
+//                                   className="flex items-center gap-2"
+//                                 >
+//                                   {lesson.status === "preview" ? (
+//                                     <PlayCircle className="h-4 w-4 text-primary flex-shrink-0" />
+//                                   ) : (
+//                                     <VideoIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+//                                   )}
+//                                   {lesson.status === "preview" ? (
+//                                     <Link
+//                                       className="text-primary hover:underline"
+//                                       href={`/courses/${course.id}/lessons/${lesson.id}`}
+//                                     >
+//                                       {lesson.name}
+//                                       <Badge
+//                                         variant="outline"
+//                                         className="ml-2 text-xs border-primary text-primary"
+//                                       >
+//                                         Preview
+//                                       </Badge>
+//                                     </Link>
+//                                   ) : (
+//                                     <span>{lesson.name}</span>
+//                                   )}
+//                                 </li>
+//                               ))}
+//                             </ul>
+//                           </AccordionContent>
+//                         </AccordionItem>
+//                       ))}
+//                     </Accordion>
+//                   </CardContent>
+//                 </Card>
+//               ))}
+//             </div>
+//           </div>
+//         ) : (
+//           <div className="bg-muted/50 rounded-lg p-6 text-center">
+//             <p className="text-muted-foreground">No courses available yet</p>
+//           </div>
+//         )}
+//       </div>
+
+//       <div className="md:col-span-1">
+//         <div className="sticky top-20">
+//           <Card className="overflow-hidden">
+//             <CardHeader className="pb-3">
+//               <Suspense
+//                 fallback={
+//                   <div className="text-2xl font-bold">
+//                     {formatPrice(product.priceInDollars)}
+//                   </div>
+//                 }
+//               >
+//                 <Price price={product.priceInDollars} />
+//               </Suspense>
+//             </CardHeader>
+//             <CardContent className="pb-3">
+//               <ul className="space-y-3">
+//                 {[
+//                   "Full lifetime access",
+//                   "Access on mobile and desktop",
+//                   "Certificate of completion",
+//                   "30-day money-back guarantee",
+//                 ].map((feature, i) => (
+//                   <li key={i} className="flex items-start gap-2">
+//                     <CheckCircle className="size-5 text-primary flex-shrink-0 mt-0.5" />
+//                     <span>{feature}</span>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </CardContent>
+//             <CardFooter className="pt-3">
+//               <Suspense fallback={<Skeleton className="h-12 w-full" />}>
+//                 <PurchaseButton productId={product.id} />
+//               </Suspense>
+//             </CardFooter>
+//           </Card>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
 async function PurchaseButton({ productId }: { productId: string }) {
   const { userId } = await auth();
