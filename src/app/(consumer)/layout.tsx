@@ -38,10 +38,10 @@ function Navbar() {
         </div>
 
         <nav className="hidden md:flex items-center gap-6">
-          <NavLink href="/">
-            <Home className="size-4" /> Home
-          </NavLink>
           <Suspense>
+            <NavLink href="/">
+              <Home className="size-4" /> Home
+            </NavLink>
             <SignedIn>
               <NavLink href="/courses" matchExact>
                 <BookOpen className="size-4" />
@@ -105,10 +105,10 @@ function MobileNav() {
         peer-checked:block md:hidden"
       >
         <div className="container !py-6 space-y-4">
-          <NavLink href="/">
-            <Home className="size-5 mr-1" /> Home
-          </NavLink>
           <Suspense>
+            <NavLink href="/">
+              <Home className="size-5 mr-1" /> Home
+            </NavLink>
             <SignedIn>
               <NavLink href="/courses" matchExact>
                 <BookOpen className="size-5 mr-1" />
