@@ -1,7 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -19,17 +19,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <ClerkProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </ClerkProvider>
-        <Toaster richColors position="top-right" />
+        <Suspense>
+          <ClerkProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </ClerkProvider>
+          <Toaster richColors position="top-right" />
+        </Suspense>
       </body>
     </html>
   );
