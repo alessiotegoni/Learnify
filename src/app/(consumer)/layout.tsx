@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 
 export default function ConsumerLayout({ children }: { children: ReactNode }) {
   return (
@@ -41,35 +41,39 @@ function Navbar() {
           <NavLink href="/">
             <Home className="size-4" /> Home
           </NavLink>
-          <SignedIn>
-            <NavLink href="/courses" matchExact>
-              <BookOpen className="size-4" />
-              My Courses
-            </NavLink>
-            <NavLink href="/purchases">
-              <History className="size-4" />
-              Purchase History
-            </NavLink>
-            <AdminLink />
-          </SignedIn>
+          <Suspense>
+            <SignedIn>
+              <NavLink href="/courses" matchExact>
+                <BookOpen className="size-4" />
+                My Courses
+              </NavLink>
+              <NavLink href="/purchases">
+                <History className="size-4" />
+                Purchase History
+              </NavLink>
+              <AdminLink />
+            </SignedIn>
+          </Suspense>
         </nav>
 
         <div className="flex items-center gap-4">
-          <MobileNav />
-          <SignedIn>
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: { width: "32px", height: "32px" },
-                },
-              }}
-            />
-          </SignedIn>
-          <SignedOut>
-            <Button asChild size="sm" className="rounded-full">
-              <SignInButton>Sign in</SignInButton>
-            </Button>
-          </SignedOut>
+          <Suspense>
+            <MobileNav />
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: { width: "32px", height: "32px" },
+                  },
+                }}
+              />
+            </SignedIn>
+            <SignedOut>
+              <Button asChild size="sm" className="rounded-full">
+                <SignInButton>Sign in</SignInButton>
+              </Button>
+            </SignedOut>
+          </Suspense>
         </div>
       </div>
     </header>
@@ -104,17 +108,19 @@ function MobileNav() {
           <NavLink href="/">
             <Home className="size-5 mr-1" /> Home
           </NavLink>
-          <SignedIn>
-            <NavLink href="/courses" matchExact>
-              <BookOpen className="size-5 mr-1" />
-              My Courses
-            </NavLink>
-            <NavLink href="/purchases">
-              <History className="size-5 mr-1" />
-              Purchase History
-            </NavLink>
-            <AdminLink classNames={{ icon: "size-5 mr-1" }} />
-          </SignedIn>
+          <Suspense>
+            <SignedIn>
+              <NavLink href="/courses" matchExact>
+                <BookOpen className="size-5 mr-1" />
+                My Courses
+              </NavLink>
+              <NavLink href="/purchases">
+                <History className="size-5 mr-1" />
+                Purchase History
+              </NavLink>
+              <AdminLink classNames={{ icon: "size-5 mr-1" }} />
+            </SignedIn>
+          </Suspense>
         </div>
       </div>
     </div>
