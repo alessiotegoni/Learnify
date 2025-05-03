@@ -109,7 +109,7 @@ async function getPublicProduct(productId: string) {
 
 function PurchaseSuccessSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="container max-w-4xl mx-auto">
       <div className="text-center mb-12">
         <div className="mx-auto mb-6 flex items-center justify-center">
           <Skeleton className="h-20 w-20 rounded-full" />
