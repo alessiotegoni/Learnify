@@ -45,7 +45,9 @@ type Props = {
   params: Promise<{ productId: string }>;
 };
 
-export default async function ProductPage({ params }: Props) {
+export default function ProductPage({ params }: Props) {
+  console.log(params);
+
   return (
     <Suspense fallback={<ProductPageSkeleton />}>
       <SuspenseBoundary params={params} />

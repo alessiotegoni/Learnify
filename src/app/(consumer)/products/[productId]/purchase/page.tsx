@@ -21,7 +21,7 @@ type Props = {
   searchParams: Promise<{ authMode: string }>;
 };
 
-export default async function PurchaseProductPage({
+export default function PurchaseProductPage({
   params,
   searchParams,
 }: Props) {
