@@ -41,9 +41,9 @@
 // import { FormattedDuration } from "@/components/FormattedDuration";
 // import { SkeletonArray } from "@/components/Skeleton";
 
-type Props = {
-  params: Promise<{ productId: string }>;
-};
+// type Props = {
+//   params: Promise<{ productId: string }>;
+// };
 
 // { params }: Props
 
